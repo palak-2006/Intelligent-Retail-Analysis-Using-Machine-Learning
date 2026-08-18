@@ -18,4 +18,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Large datasets - kept locally, not uploaded to GitHub
+data/train.csv
+data/online_retail_II.xlsx
+data/online_retail_clean.csv
+
 .venv/
