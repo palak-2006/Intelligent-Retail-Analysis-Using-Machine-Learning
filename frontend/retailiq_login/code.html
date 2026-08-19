@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RetailIQ - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "primary": "#dbfcff",
+                        "on-primary": "#00363a",
+                        "surface": "#10131a",
+                        "surface-container-high": "#272a31",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "primary-container": "#00f0ff",
+                        "tertiary-container": "#ffcdcf",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-container": "#00311f",
+                        "on-primary-container": "#006970",
+                        "secondary-fixed": "#6ffbbe",
+                        "secondary": "#4edea3",
+                        "tertiary": "#fff3f2",
+                        "background": "#10131a",
+                        "inverse-primary": "#006970",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface-tint": "#00dbe9",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-highest": "#32353c",
+                        "on-surface-variant": "#b9cacb",
+                        "on-secondary-fixed-variant": "#005236",
+                        "outline-variant": "#3b494b",
+                        "surface-container": "#1d2026",
+                        "surface-variant": "#32353c",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary": "#67001b",
+                        "outline": "#849495",
+                        "surface-container-low": "#191c22",
+                        "on-surface": "#e1e2eb",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-secondary": "#003824",
+                        "primary-fixed": "#7df4ff",
+                        "on-background": "#e1e2eb",
+                        "surface-dim": "#10131a",
+                        "secondary-container": "#00a572",
+                        "surface-container-lowest": "#0b0e14",
+                        "inverse-surface": "#e1e2eb",
+                        "secondary-fixed-dim": "#4edea3",
+                        "inverse-on-surface": "#2e3037",
+                        "on-tertiary-container": "#bc0b3b",
+                        "surface-bright": "#363940",
+                        "on-tertiary-fixed-variant": "#92002a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "lg": "40px",
+                        "margin": "32px",
+                        "gutter": "24px",
+                        "xl": "64px",
+                        "sm": "16px",
+                        "xs": "8px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "data-sm": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Geist"],
+                        "data-lg": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "data-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b0e14; /* surface-container-lowest */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.08), transparent 25%);
+            background-attachment: fixed;
+        }
+        .glass-card {
+            background: rgba(21, 25, 33, 0.8); /* base card color with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 30px -5px rgba(0, 240, 255, 0.08);
+        }
+        .input-hud {
+            background-color: #0b0e14;
+            border: none;
+            border-bottom: 1px solid #3b494b; /* outline-variant */
+            color: #e1e2eb; /* on-surface */
+            transition: all 0.3s ease;
+        }
+        .input-hud:focus {
+            outline: none;
+            border-bottom-color: #00f0ff; /* primary-container */
+            box-shadow: 0 2px 10px -2px rgba(0, 240, 255, 0.3);
+        }
+        .input-hud::placeholder {
+            color: #b9cacb; /* on-surface-variant */
+            opacity: 0.5;
+        }
+        .btn-primary {
+            background-color: #00f0ff; /* primary-container */
+            color: #00363a; /* on-primary */
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md text-on-background min-h-screen flex items-center justify-center relative overflow-hidden">
+<!-- Ambient Grid Background Layer -->
+<div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: linear-gradient(#3b494b 1px, transparent 1px), linear-gradient(90deg, #3b494b 1px, transparent 1px); background-size: 40px 40px;">
+</div>
+<!-- Login Container -->
+<main class="relative z-10 w-full max-w-md p-sm md:p-md">
+<!-- Logo / Header -->
+<div class="flex flex-col items-center justify-center mb-lg space-y-md">
+<img alt="RetailIQ Logo" class="h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,240,255,0.3)]" src="https://lh3.googleusercontent.com/aida/AP1WRLsGTtCgBD2_S9qgiUUKP1rxdBDd2XG9BVa6MwplUR09WzAH6KE3TRNv2Umxln5iL9mn1Px0ZJpelY3PYz31yXAkKRnKPMm3tiq6b20Q9_ci2mwEYzSwlEKs3cTJKsYrA6Ev4ztq5hx0Pz9p8Azdj1hzqDLTiwR5CdUVi3osUKsRQojzESQh5JHOAkYFxOXhQcjwHNIMEQgvtkbwF9mo0KDjpvHPsGdAAZj4tHxGZMXmPg-IO20-Bpc7jmBn"/>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface text-center">
+                Secure Access
+            </h1>
+</div>
+<!-- Glassmorphic Card -->
+<div class="glass-card rounded-xl p-lg flex flex-col gap-lg">
+<form class="flex flex-col gap-md">
+<!-- Email Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-data-sm text-data-sm text-on-surface-variant flex items-center gap-2" for="email">
+<span class="material-symbols-outlined text-[16px]">mail</span>
+                        Work Email
+                    </label>
+<input class="input-hud w-full py-2 font-data-sm text-data-sm focus:ring-0" id="email" name="email" placeholder="analyst@retailiq.com" required="" type="email"/>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-data-sm text-data-sm text-on-surface-variant flex items-center justify-between" for="password">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+                            Password
+                        </span>
+<a class="text-primary-container hover:text-primary-fixed-dim transition-colors" href="#">Forgot?</a>
+</label>
+<input class="input-hud w-full py-2 font-data-sm text-data-sm focus:ring-0" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<!-- Remember Me & Submit -->
+<div class="flex flex-col gap-lg mt-sm">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="form-checkbox h-4 w-4 text-primary-container rounded border-outline-variant bg-surface-container-low focus:ring-primary-container focus:ring-offset-surface-container-lowest" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Remember device</span>
+</label>
+<button class="btn-primary w-full py-3 rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2" type="submit">
+                        Sign In
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Footer Links -->
+<div class="pt-sm border-t border-outline-variant/50 text-center">
+<p class="font-data-sm text-data-sm text-on-surface-variant">
+                    Authorized personnel only. <br/>
+<span class="text-secondary-fixed opacity-70">Node: US-EAST-1 Active</span>
+</p>
+</div>
+</div>
+</main>
+</body></html>

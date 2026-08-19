@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Customer Profile: Alex Rivera - RetailIQ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#10131a",
+                        "surface-dim": "#10131a",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-tertiary-container": "#bc0b3b",
+                        "outline": "#849495",
+                        "on-background": "#e1e2eb",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#32353c",
+                        "on-primary": "#00363a",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-container": "#ffcdcf",
+                        "surface-tint": "#00dbe9",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-tertiary": "#67001b",
+                        "secondary-container": "#00a572",
+                        "on-surface-variant": "#b9cacb",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-secondary-container": "#00311f",
+                        "inverse-surface": "#e1e2eb",
+                        "surface-container-high": "#272a31",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-low": "#191c22",
+                        "primary-fixed": "#7df4ff",
+                        "tertiary": "#fff3f2",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "surface": "#10131a",
+                        "secondary-fixed": "#6ffbbe",
+                        "primary": "#dbfcff",
+                        "on-surface": "#e1e2eb",
+                        "error-container": "#93000a",
+                        "on-primary-container": "#006970",
+                        "primary-container": "#00f0ff",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#32353c",
+                        "on-secondary": "#003824",
+                        "outline-variant": "#3b494b",
+                        "primary-fixed-dim": "#00dbe9",
+                        "inverse-on-surface": "#2e3037",
+                        "on-error": "#690005",
+                        "secondary": "#4edea3",
+                        "surface-container": "#1d2026",
+                        "surface-container-lowest": "#0b0e14",
+                        "surface-bright": "#363940",
+                        "inverse-primary": "#006970"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "lg": "40px",
+                        "margin": "32px",
+                        "xl": "64px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "sm": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Geist"],
+                        "data-lg": ["JetBrains Mono"],
+                        "display-lg": ["Geist"],
+                        "label-caps": ["JetBrains Mono"],
+                        "data-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "data-lg": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "data-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(21, 25, 33, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid #1E293B;
+            box-shadow: 0 10px 30px -5px rgba(0, 240, 255, 0.05);
+        }
+        .neon-glow {
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        .neon-text {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+        }
+        
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #10131a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dbe9; 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex">
+<!-- Side Nav Bar (From JSON) -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface/80 dark:bg-surface/80 border-r border-outline-variant backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,240,255,0.08)] flex flex-col h-full py-md px-sm z-50">
+<div class="mb-lg">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-container">RetailIQ</h1>
+<p class="text-on-surface-variant font-label-caps text-label-caps mt-xs tracking-widest uppercase">Intelligent Analytics</p>
+</div>
+<div class="flex-1 space-y-xs">
+<a class="flex items-center gap-sm px-sm py-xs rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-body-md text-body-md">Analytics</span>
+</a>
+<!-- Active State Logic Applied Here based on 'Customer Details' -->
+<a class="flex items-center gap-sm px-sm py-xs rounded bg-secondary-container/20 text-secondary border-r-2 border-secondary hover:bg-surface-container-high transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Customers</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md text-body-md">Products</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-xs rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+<span class="font-body-md text-body-md">AI/ML</span>
+</a>
+</div>
+<div class="mt-auto pt-sm border-t border-outline-variant">
+<button class="w-full py-xs px-sm rounded bg-primary-container text-on-primary-container font-label-caps text-label-caps hover:bg-primary transition-colors flex items-center justify-center gap-xs shadow-sm hover:shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-shadow">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Generate Report
+            </button>
+</div>
+</nav>
+<!-- Top Nav Bar (From JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-surface-dim/80 dark:bg-surface-dim/80 border-b border-outline-variant backdrop-blur-xl shadow-sm flex justify-between items-center px-lg w-full">
+<!-- Search -->
+<div class="flex items-center bg-surface-container-high rounded border border-outline-variant px-sm py-xs w-64 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-xs text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none text-on-surface focus:ring-0 w-full text-sm placeholder-on-surface-variant/50 p-0" placeholder="Search customers, products..." type="text"/>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant ml-xs">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female data scientist looking forward in a softly lit modern office setting with dark gray and cyan accents. High quality, realistic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBRAVnAZj4AeYpIAvHOyiZDIJp2RBs4bIgmfDVD4vvKl0S_RpbtAe9l_Po1R4k7qvGwUQ6EhXW4YomaeFGFYJ_j8xMxHPu4CljcknQyJ4pBJGauosZuBAfa_xRt5UwLk33EXBDMLUWXUhokLo97g01l1w1QjN0DJsZBUbQ-XQ7BIMooUfpsBt3LcsXbjLsNavHWYchRGzbIig2xkSgQtx_ubjwxPbUAB0YTonLrmxtQoD_YMYGQTQF0g"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen w-full p-lg lg:p-xl flex flex-col gap-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-xs">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="text-on-surface-variant text-sm font-body-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+                        Back to Customers
+                    </span>
+</div>
+<div class="flex items-center gap-md">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Customer Profile: Alex Rivera</h2>
+<span class="bg-secondary-container/20 text-secondary border border-secondary/50 px-xs py-1 rounded-full font-label-caps text-label-caps flex items-center gap-1 neon-text">
+<span class="material-symbols-outlined text-[14px]" data-icon="workspace_premium" data-weight="fill" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                        Champion
+                    </span>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="px-sm py-xs rounded border border-outline-variant text-on-surface hover:bg-surface-container-high hover:border-primary/50 transition-colors font-body-md text-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+                    Edit Profile
+                </button>
+<button class="px-sm py-xs rounded bg-primary-container text-on-primary-container hover:bg-primary transition-colors shadow-sm font-body-md text-sm flex items-center gap-xs neon-glow">
+<span class="material-symbols-outlined text-sm" data-icon="chat">chat</span>
+                    Message
+                </button>
+</div>
+</div>
+<!-- Grid Layout for Modules -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Module 1: Profile Header (Spans 4 cols on desktop) -->
+<div class="md:col-span-4 glass-panel rounded-lg p-md flex flex-col gap-md">
+<div class="flex items-start gap-md">
+<div class="relative w-20 h-20 rounded border border-outline-variant overflow-hidden shrink-0">
+<img alt="Alex Rivera" class="w-full h-full object-cover" data-alt="A portrait photograph of a confident young professional man with dark hair, wearing a sleek modern jacket, against a dark neutral background with a subtle cyan rim light. High quality, corporate tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsyG28T864Z_8FdtHiw2mv3mNoRCLIP_ph_lYQduloHzRipRQpQFWTu9oI2nxzrx5G5y5gRpHBwlzkP0mccq9917q99TjrnCiXsIkgjStgrtQAnG8EHlORn4VZGXXxXLtuqvVykTUHDONxP0wC-mG37JMA9GD0t6UTJRG54GQf9IeSGMmIb7GxPixNgjzsSoFJ7bupKPi7fuRSpf4OMMOzY9FAGViC-TdX2DDAU8zCf61DW3J-LA2PkQ"/>
+<div class="absolute bottom-0 right-0 bg-secondary w-3 h-3 rounded-full border-2 border-[#151921]"></div>
+</div>
+<div>
+<h3 class="font-data-lg text-data-lg text-on-surface mb-1">Alex Rivera</h3>
+<p class="text-on-surface-variant text-sm font-body-md flex items-center gap-xs mb-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="mail">mail</span>
+                            alex.rivera@example.com
+                        </p>
+<p class="text-on-surface-variant text-sm font-body-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+                            San Francisco, CA
+                        </p>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-md grid grid-cols-2 gap-sm">
+<div>
+<p class="text-on-surface-variant font-label-caps text-label-caps mb-xs">Total Lifetime Value</p>
+<p class="font-data-lg text-data-lg text-primary">$12,450</p>
+<p class="text-secondary text-xs flex items-center mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                            +12% YoY
+                        </p>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-caps text-label-caps mb-xs">Purchase Frequency</p>
+<p class="font-data-lg text-data-lg text-on-surface">2.4x <span class="text-sm text-on-surface-variant font-body-md">/mo</span></p>
+<p class="text-on-surface-variant text-xs flex items-center mt-1">
+                            Top 5% bracket
+                        </p>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<p class="text-on-surface-variant font-label-caps text-label-caps mb-sm">Segment Memberships</p>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface border border-outline-variant text-xs font-body-md">Tech Early Adopter</span>
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface border border-outline-variant text-xs font-body-md">High AOV</span>
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface border border-outline-variant text-xs font-body-md">Weekend Shopper</span>
+</div>
+</div>
+</div>
+<!-- Module 2 & 3 Container (Spans 8 cols) -->
+<div class="md:col-span-8 flex flex-col gap-gutter">
+<!-- AI Insights Card (Spans full 8 cols) -->
+<div class="glass-panel rounded-lg p-md relative overflow-hidden group">
+<!-- Subtle background glow for AI -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl group-hover:bg-primary-container/20 transition-all duration-500"></div>
+<div class="flex items-center gap-sm mb-md relative z-10">
+<div class="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h3 class="font-data-lg text-data-lg text-on-surface">Next Best Action</h3>
+<span class="ml-auto text-xs text-on-surface-variant font-label-caps text-label-caps border border-outline-variant px-2 py-1 rounded">Confidence: 94%</span>
+</div>
+<div class="bg-surface-container-highest/50 rounded border border-outline-variant p-md relative z-10 flex flex-col md:flex-row gap-md items-start md:items-center">
+<div class="flex-1">
+<h4 class="text-lg font-headline-lg-mobile text-primary-fixed mb-xs">Send personalized VIP discount for Home Goods</h4>
+<p class="text-on-surface-variant text-sm font-body-md">ML models indicate high propensity to purchase items in the 'Smart Home' sub-category within the next 7 days based on recent browsing behavior and seasonal trends.</p>
+</div>
+<button class="shrink-0 px-sm py-xs rounded bg-surface border border-primary/50 text-primary hover:bg-primary/10 transition-colors font-body-md text-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+                            Execute Action
+                        </button>
+</div>
+</div>
+<!-- Charts Container: Purchase History & Affinity (Split 4/4 inside the 8 col area) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Purchase History & Predictions -->
+<div class="glass-panel rounded-lg p-md flex flex-col">
+<h3 class="font-data-lg text-data-lg text-on-surface mb-sm flex justify-between items-center">
+                            Spend Trajectory
+                            <span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-on-surface" data-icon="more_horiz">more_horiz</span>
+</h3>
+<div class="flex-1 min-h-[200px] relative mt-sm flex items-end justify-between px-xs pb-md border-b border-l border-outline-variant">
+<!-- Y-axis labels -->
+<div class="absolute left-[-30px] bottom-md text-xs text-on-surface-variant">0k</div>
+<div class="absolute left-[-30px] bottom-[50%] text-xs text-on-surface-variant">2k</div>
+<div class="absolute left-[-30px] top-0 text-xs text-on-surface-variant">4k</div>
+<!-- Grid lines -->
+<div class="absolute left-0 bottom-[50%] w-full h-[1px] bg-outline-variant/30"></div>
+<div class="absolute left-0 top-0 w-full h-[1px] bg-outline-variant/30"></div>
+<!-- Mock Chart Bars -->
+<div class="w-8 bg-surface-container-high border border-outline-variant rounded-t relative group" style="height: 30%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-outline-variant text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">$1.2k</div>
+</div>
+<div class="w-8 bg-surface-container-high border border-outline-variant rounded-t relative group" style="height: 45%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-outline-variant text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">$1.8k</div>
+</div>
+<div class="w-8 bg-surface-container-high border border-outline-variant rounded-t relative group" style="height: 40%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-outline-variant text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">$1.6k</div>
+</div>
+<div class="w-8 bg-primary/20 border border-primary/50 rounded-t relative group neon-glow" style="height: 70%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-outline-variant text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">$2.8k</div>
+</div>
+<div class="w-8 bg-surface-container-high border border-outline-variant rounded-t relative group" style="height: 55%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-outline-variant text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">$2.2k</div>
+</div>
+<!-- Predictive line mock -->
+<div class="absolute right-0 bottom-[55%] w-[20%] h-[2px] border-t-2 border-dashed border-secondary origin-left -rotate-12"></div>
+<div class="w-8 bg-transparent border-2 border-dashed border-secondary/50 rounded-t relative group" style="height: 65%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-outline-variant text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10">Proj: $2.6k</div>
+</div>
+</div>
+<div class="flex justify-between px-xs mt-2 text-xs text-on-surface-variant">
+<span>Q1</span>
+<span>Q2</span>
+<span>Q3</span>
+<span class="text-primary">Q4</span>
+<span>Q1</span>
+<span class="text-secondary">Q2(P)</span>
+</div>
+</div>
+<!-- Product Affinity Visualization -->
+<div class="glass-panel rounded-lg p-md flex flex-col relative overflow-hidden">
+<img alt="Customers Icon Accent" class="absolute bottom-2 right-2 opacity-20 pointer-events-none" src="https://lh3.googleusercontent.com/aida/AP1WRLuu07Ijx78fCjfX-D5CkW6IV9uyWm4cHNUzdP1opGoCcrDi-mPePKc9Lc41k9lINRobdagxN5I1g3cJIVE2UZHPtOj25A8pJTZaf5HEpavUktrTLIBTv8tXykSfIaJtJtIkmgC_s5wSWDJOdIyXK33LEh9ID_f-9DytHbgsQXzguedVEjPpJMqLm2U8JjmfjwhU2RhaDL-o9VnnEP4fUjR97zNJKdGeTQQuRhri99_WV-G1vlLOJVbv98c" style="width: 48px; height: 48px;"/>
+<h3 class="font-data-lg text-data-lg text-on-surface mb-sm flex justify-between items-center">
+                            Category Affinity
+                            <span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-on-surface" data-icon="filter_list">filter_list</span>
+</h3>
+<div class="flex-1 flex flex-col justify-center gap-md mt-sm">
+<!-- Affinity Row 1 -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-on-surface">Electronics</span>
+<span class="font-data-sm text-data-sm text-primary">85%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 border border-outline-variant/50 overflow-hidden">
+<div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<!-- Affinity Row 2 -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-on-surface">Smart Home</span>
+<span class="font-data-sm text-data-sm text-primary-fixed-dim">72%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 border border-outline-variant/50 overflow-hidden">
+<div class="bg-primary-fixed-dim h-1.5 rounded-full" style="width: 72%"></div>
+</div>
+</div>
+<!-- Affinity Row 3 -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-on-surface">Apparel</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">45%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 border border-outline-variant/50 overflow-hidden">
+<div class="bg-outline-variant h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<!-- Affinity Row 4 -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-on-surface">Groceries</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">20%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 border border-outline-variant/50 overflow-hidden">
+<div class="bg-outline-variant h-1.5 rounded-full" style="width: 20%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
