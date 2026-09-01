@@ -1,0 +1,479 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Customer Profile: Alex Rivera - RetailIQ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#2e3040",
+                    "tertiary-fixed": "#ede9fe",
+                    "on-primary-container": "#e0e2ff",
+                    "on-error": "#ffffff",
+                    "tertiary": "#7c3aed",
+                    "surface-tint": "#6366f1",
+                    "secondary-fixed": "#d8dae6",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-container": "#585a68",
+                    "inverse-primary": "#a5b4fc",
+                    "surface-container-low": "#e5e7ed",
+                    "secondary-container": "#d8dae6",
+                    "outline": "#8a8c9a",
+                    "on-secondary-fixed": "#1a1b26",
+                    "surface-container-high": "#dcdee4",
+                    "primary": "#6366f1",
+                    "primary-fixed": "#e0e2ff",
+                    "surface-dim": "#d4d6dc",
+                    "on-error-container": "#991b1b",
+                    "surface": "#e8eaf0",
+                    "on-secondary-fixed-variant": "#404252",
+                    "outline-variant": "#d0d2dc",
+                    "inverse-on-surface": "#e8eaf0",
+                    "background": "#e8eaf0",
+                    "surface-variant": "#dcdee4",
+                    "inverse-surface": "#2e3040",
+                    "on-tertiary-fixed-variant": "#5b21b6",
+                    "on-primary": "#ffffff",
+                    "secondary": "#6c6e7e",
+                    "on-surface-variant": "#585a68",
+                    "on-primary-fixed-variant": "#4338ca",
+                    "error": "#dc2626",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#a78bfa",
+                    "surface-bright": "#edeef4",
+                    "surface-container": "#e2e4ea",
+                    "on-tertiary-container": "#3b1f63",
+                    "on-background": "#2e3040",
+                    "tertiary-fixed-dim": "#c4b5fd",
+                    "primary-container": "#818cf8",
+                    "surface-container-highest": "#d6d8de",
+                    "on-tertiary-fixed": "#2e1065",
+                    "error-container": "#fee2e2",
+                    "secondary-fixed-dim": "#b8baca",
+                    "surface-container-lowest": "#f0f2f8",
+                    "on-primary-fixed": "#1e1b4b",
+                    "primary-fixed-dim": "#a5b4fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {}
+          },
+        },
+      }
+    </script>
+<style>
+        :root {
+            --bg-base: #e8eaf0;
+            --shadow-light: #ffffff;
+            --shadow-dark: #d1d3d8;
+            --purple-glow: rgba(124, 58, 237, 0.25);
+            --text-main: #2e3040;
+        }
+        .dark {
+            --bg-base: #1e1e24;
+            --shadow-light: #2a2a35;
+            --shadow-dark: #121215;
+            --purple-glow: rgba(167, 139, 250, 0.25);
+            --text-main: #f0f2f8;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .dark .bg-surface, .dark .bg-surface\/80, .dark .bg-background {
+            background-color: var(--bg-base);
+        }
+        .dark .text-on-surface, .dark .text-on-background {
+            color: var(--text-main);
+        }
+        .dark .text-on-surface-variant {
+            color: #a0a2b0;
+        }
+
+        .neo-card {
+            background: var(--bg-base);
+            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+            border: none;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        .neo-inset {
+            background: var(--bg-base);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            border: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .neo-button {
+            background: var(--bg-base);
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            border: none;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+        .neo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+        }
+        .neo-button:active {
+            transform: translateY(1px);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .neo-button-primary {
+            background: #6366f1;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            color: #ffffff;
+            border: none;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+        .neo-button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light), 0 0 15px rgba(99,102,241,0.4);
+        }
+        .neo-button-primary:active {
+            transform: translateY(1px);
+            box-shadow: inset 4px 4px 8px #4f52c1, inset -4px -4px 8px #777afb;
+        }
+
+        /* New Purple Hover State */
+        .hover-neo-purple {
+            transition: all 0.3s ease;
+        }
+        .hover-neo-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light), 0 0 20px var(--purple-glow) !important;
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+        .hover-neo-purple:active {
+            transform: translateY(1px);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light) !important;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-in {
+            animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8a8c9a; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1; 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased min-h-screen flex">
+<!-- Side Nav Bar -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface/80 border-r border-outline-variant/30 backdrop-blur-xl flex flex-col h-full py-6 px-4 z-50 transition-colors duration-300">
+<div class="mb-10">
+<h1 class="font-headline text-2xl font-bold text-primary">RetailIQ</h1>
+<p class="text-on-surface-variant font-label text-xs mt-2 tracking-widest uppercase">Intelligent Analytics</p>
+</div>
+<div class="flex-1 space-y-2">
+<a class="flex items-center gap-4 px-4 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-body text-base">Analytics</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 rounded bg-primary/10 text-primary border-r-2 border-primary hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body text-base">Customers</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body text-base">Products</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+<span class="font-body text-base">AI/ML</span>
+</a>
+</div>
+<div class="mt-auto pt-4">
+<button class="w-full py-2 px-4 neo-button-primary hover-neo-purple font-label text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Generate Report
+            </button>
+</div>
+</nav>
+<!-- Top Nav Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-surface/80 border-b border-outline-variant/30 backdrop-blur-xl flex justify-between items-center px-10 transition-colors duration-300">
+<!-- Search -->
+<div class="flex items-center neo-inset px-4 py-2 w-64">
+<span class="material-symbols-outlined text-on-surface-variant mr-2 text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none text-on-surface focus:ring-0 w-full text-sm placeholder-on-surface-variant/70 p-0 outline-none" placeholder="Search customers, products..." type="text">
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<!-- Theme Toggle -->
+<button class="text-on-surface-variant hover:text-tertiary hover-neo-purple transition-colors p-2 neo-button rounded-full flex items-center justify-center group" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined dark:hidden text-[20px]" data-icon="dark_mode">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block text-[20px]" data-icon="light_mode">light_mode</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 neo-button rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 neo-button rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 neo-button rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden ml-2 shadow-sm ring-2 ring-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female data scientist looking forward in a softly lit modern office setting with dark gray and cyan accents. High quality, realistic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBRAVnAZj4AeYpIAvHOyiZDIJp2RBs4bIgmfDVD4vvKl0S_RpbtAe9l_Po1R4k7qvGwUQ6EhXW4YomaeFGFYJ_j8xMxHPu4CljcknQyJ4pBJGauosZuBAfa_xRt5UwLk33EXBDMLUWXUhokLo97g01l1w1QjN0DJsZBUbQ-XQ7BIMooUfpsBt3LcsXbjLsNavHWYchRGzbIig2xkSgQtx_ubjwxPbUAB0YTonLrmxtQoD_YMYGQTQF0g">
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen w-full p-10 flex flex-col gap-10">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-2 animate-slide-in">
+<div>
+<div class="flex items-center gap-4 mb-2">
+<span class="text-on-surface-variant text-sm font-body flex items-center gap-2 cursor-pointer hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+                        Back to Customers
+                    </span>
+</div>
+<div class="flex items-center gap-6">
+<h2 class="font-headline text-3xl font-semibold text-on-surface">Customer Profile: Alex Rivera</h2>
+<span class="bg-tertiary/10 text-tertiary px-3 py-1 rounded-full font-label text-xs flex items-center gap-1 border border-tertiary/20">
+<span class="material-symbols-outlined text-[14px]" data-icon="workspace_premium" data-weight="fill" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                        Champion
+                    </span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-4 py-2 neo-button hover-neo-purple text-on-surface font-body text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+                    Edit Profile
+                </button>
+<button class="px-4 py-2 neo-button-primary hover-neo-purple font-body text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="chat">chat</span>
+                    Message
+                </button>
+</div>
+</div>
+<!-- Grid Layout for Modules -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Module 1: Profile Header (Spans 4 cols on desktop) -->
+<div class="md:col-span-4 neo-card p-6 flex flex-col gap-6 animate-slide-in delay-100">
+<div class="flex items-start gap-6">
+<div class="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 neo-inset p-1">
+<img alt="Alex Rivera" class="w-full h-full object-cover rounded-xl" data-alt="A portrait photograph of a confident young professional man with dark hair, wearing a sleek modern jacket, against a dark neutral background with a subtle cyan rim light. High quality, corporate tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsyG28T864Z_8FdtHiw2mv3mNoRCLIP_ph_lYQduloHzRipRQpQFWTu9oI2nxzrx5G5y5gRpHBwlzkP0mccq9917q99TjrnCiXsIkgjStgrtQAnG8EHlORn4VZGXXxXLtuqvVykTUHDONxP0wC-mG37JMA9GD0t6UTJRG54GQf9IeSGMmIb7GxPixNgjzsSoFJ7bupKPi7fuRSpf4OMMOzY9FAGViC-TdX2DDAU8zCf61DW3J-LA2PkQ">
+<div class="absolute bottom-1 right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-[var(--bg-base)]"></div>
+</div>
+<div class="pt-2">
+<h3 class="font-display text-xl font-semibold text-on-surface mb-2">Alex Rivera</h3>
+<p class="text-on-surface-variant text-sm font-body flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="mail">mail</span>
+                            alex.rivera@example.com
+                        </p>
+<p class="text-on-surface-variant text-sm font-body flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+                            San Francisco, CA
+                        </p>
+</div>
+</div>
+<div class="border-t border-outline-variant/30 pt-6 grid grid-cols-2 gap-4">
+<div class="neo-inset p-4 rounded-xl text-center hover-neo-purple cursor-default">
+<p class="text-on-surface-variant font-label text-xs mb-2">Lifetime Value</p>
+<p class="font-display text-2xl font-bold text-primary">$12,450</p>
+<p class="text-green-600 text-xs flex items-center justify-center mt-1 font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                            +12% YoY
+                        </p>
+</div>
+<div class="neo-inset p-4 rounded-xl text-center hover-neo-purple cursor-default">
+<p class="text-on-surface-variant font-label text-xs mb-2">Frequency</p>
+<p class="font-display text-2xl font-bold text-on-surface">2.4x <span class="text-sm text-on-surface-variant font-body font-normal">/mo</span></p>
+<p class="text-on-surface-variant text-xs mt-1">
+                            Top 5% bracket
+                        </p>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/30">
+<p class="text-on-surface-variant font-label text-xs mb-4">Segment Memberships</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-full neo-inset text-on-surface text-xs font-body hover:text-primary transition-colors cursor-default">Tech Early Adopter</span>
+<span class="px-3 py-1.5 rounded-full neo-inset text-on-surface text-xs font-body hover:text-primary transition-colors cursor-default">High AOV</span>
+<span class="px-3 py-1.5 rounded-full neo-inset text-on-surface text-xs font-body hover:text-primary transition-colors cursor-default">Weekend Shopper</span>
+</div>
+</div>
+</div>
+<!-- Module 2 & 3 Container (Spans 8 cols) -->
+<div class="md:col-span-8 flex flex-col gap-8">
+<!-- AI Insights Card (Spans full 8 cols) -->
+<div class="neo-card p-6 relative overflow-hidden group animate-slide-in delay-200 border border-transparent dark:border-outline-variant/10">
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl transition-all duration-500 group-hover:bg-tertiary/15"></div>
+<div class="flex items-center gap-4 mb-6 relative z-10">
+<div class="w-10 h-10 rounded-full neo-inset flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h3 class="font-display text-lg font-semibold text-on-surface">Next Best Action</h3>
+<span class="ml-auto text-xs text-on-surface-variant font-label neo-inset px-3 py-1.5 rounded-full">Confidence: 94%</span>
+</div>
+<div class="bg-surface/50 dark:bg-black/10 rounded-xl border border-outline-variant/20 p-6 relative z-10 flex flex-col md:flex-row gap-6 items-start md:items-center">
+<div class="flex-1">
+<h4 class="text-lg font-headline font-semibold text-primary mb-2">Send personalized VIP discount for Home Goods</h4>
+<p class="text-on-surface-variant text-sm font-body leading-relaxed">ML models indicate high propensity to purchase items in the 'Smart Home' sub-category within the next 7 days based on recent browsing behavior and seasonal trends.</p>
+</div>
+<button class="shrink-0 px-6 py-3 neo-button hover-neo-purple text-tertiary font-medium text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+                            Execute Action
+                        </button>
+</div>
+</div>
+<!-- Charts Container: Purchase History & Affinity -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+<!-- Purchase History -->
+<div class="neo-card p-6 flex flex-col animate-slide-in delay-300">
+<h3 class="font-display text-lg font-semibold text-on-surface mb-6 flex justify-between items-center">
+                            Spend Trajectory
+                            <button class="neo-button p-1.5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-tertiary hover-neo-purple">
+<span class="material-symbols-outlined text-sm" data-icon="more_horiz">more_horiz</span>
+</button>
+</h3>
+<div class="flex-1 min-h-[220px] relative flex items-end justify-between px-2 pb-6 border-b border-l border-outline-variant/30 ml-8 mt-4">
+<!-- Y-axis labels -->
+<div class="absolute left-[-35px] bottom-6 text-xs text-on-surface-variant font-medium">0k</div>
+<div class="absolute left-[-35px] bottom-[50%] text-xs text-on-surface-variant font-medium">2k</div>
+<div class="absolute left-[-35px] top-0 text-xs text-on-surface-variant font-medium">4k</div>
+<!-- Grid lines -->
+<div class="absolute left-0 bottom-[50%] w-full h-[1px] bg-outline-variant/20"></div>
+<div class="absolute left-0 top-0 w-full h-[1px] bg-outline-variant/20"></div>
+<!-- Mock Chart Bars (Neomorphic style) -->
+<div class="w-8 rounded-t-md relative group neo-button hover-neo-purple bg-surface/50 dark:bg-white/5" style="height: 30%">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 neo-card text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 font-medium whitespace-nowrap text-on-surface">$1.2k</div>
+</div>
+<div class="w-8 rounded-t-md relative group neo-button hover-neo-purple bg-surface/50 dark:bg-white/5" style="height: 45%">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 neo-card text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 font-medium whitespace-nowrap text-on-surface">$1.8k</div>
+</div>
+<div class="w-8 rounded-t-md relative group neo-button hover-neo-purple bg-surface/50 dark:bg-white/5" style="height: 40%">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 neo-card text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 font-medium whitespace-nowrap text-on-surface">$1.6k</div>
+</div>
+<div class="w-8 rounded-t-md relative group bg-gradient-to-t from-primary/80 to-primary shadow-[0_4px_15px_rgba(99,102,241,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(124,58,237,0.5)]" style="height: 70%">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 neo-card text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 font-medium whitespace-nowrap text-on-surface">$2.8k</div>
+</div>
+<div class="w-8 rounded-t-md relative group neo-button hover-neo-purple bg-surface/50 dark:bg-white/5" style="height: 55%">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 neo-card text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 font-medium whitespace-nowrap text-on-surface">$2.2k</div>
+</div>
+<!-- Predictive line mock -->
+<div class="absolute right-0 bottom-[55%] w-[20%] h-[2px] border-t-2 border-dashed border-tertiary origin-left -rotate-12 opacity-70"></div>
+<div class="w-8 border-2 border-dashed border-tertiary/60 bg-tertiary/10 rounded-t-md relative group transition-all hover:-translate-y-1 hover:bg-tertiary/20 hover:shadow-[0_0_15px_rgba(124,58,237,0.3)]" style="height: 65%">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 neo-card text-xs p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 font-medium whitespace-nowrap text-tertiary">Proj: $2.6k</div>
+</div>
+</div>
+<div class="flex justify-between px-2 mt-4 text-xs font-medium text-on-surface-variant ml-8">
+<span>Q1</span>
+<span>Q2</span>
+<span>Q3</span>
+<span class="text-primary font-bold">Q4</span>
+<span>Q1</span>
+<span class="text-tertiary">Q2(P)</span>
+</div>
+</div>
+<!-- Product Affinity Visualization -->
+<div class="neo-card p-6 flex flex-col animate-slide-in delay-300">
+<h3 class="font-display text-lg font-semibold text-on-surface mb-6 flex justify-between items-center">
+                            Category Affinity
+                            <button class="neo-button p-1.5 rounded-full flex items-center justify-center text-on-surface-variant hover:text-tertiary hover-neo-purple">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+</button>
+</h3>
+<div class="flex-1 flex flex-col justify-center gap-6">
+<!-- Affinity Row 1 -->
+<div class="group">
+<div class="flex justify-between text-sm mb-2 font-medium">
+<span class="text-on-surface">Electronics</span>
+<span class="text-primary group-hover:text-tertiary transition-colors">85%</span>
+</div>
+<div class="w-full neo-inset rounded-full h-3 overflow-hidden">
+<div class="bg-gradient-to-r from-primary to-primary/80 h-3 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)] group-hover:shadow-[0_0_15px_rgba(124,58,237,0.5)] transition-shadow" style="width: 85%"></div>
+</div>
+</div>
+<!-- Affinity Row 2 -->
+<div class="group">
+<div class="flex justify-between text-sm mb-2 font-medium">
+<span class="text-on-surface">Smart Home</span>
+<span class="text-tertiary">72%</span>
+</div>
+<div class="w-full neo-inset rounded-full h-3 overflow-hidden">
+<div class="bg-gradient-to-r from-tertiary to-tertiary/80 h-3 rounded-full shadow-[0_0_10px_rgba(124,58,237,0.5)] group-hover:shadow-[0_0_15px_rgba(124,58,237,0.6)] transition-shadow" style="width: 72%"></div>
+</div>
+</div>
+<!-- Affinity Row 3 -->
+<div class="group">
+<div class="flex justify-between text-sm mb-2 font-medium">
+<span class="text-on-surface">Apparel</span>
+<span class="text-on-surface-variant group-hover:text-on-surface transition-colors">45%</span>
+</div>
+<div class="w-full neo-inset rounded-full h-3 overflow-hidden">
+<div class="bg-outline-variant dark:bg-white/10 h-3 rounded-full transition-colors group-hover:bg-outline" style="width: 45%"></div>
+</div>
+</div>
+<!-- Affinity Row 4 -->
+<div class="group">
+<div class="flex justify-between text-sm mb-2 font-medium">
+<span class="text-on-surface">Groceries</span>
+<span class="text-on-surface-variant group-hover:text-on-surface transition-colors">20%</span>
+</div>
+<div class="w-full neo-inset rounded-full h-3 overflow-hidden">
+<div class="bg-outline-variant dark:bg-white/10 h-3 rounded-full transition-colors group-hover:bg-outline" style="width: 20%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

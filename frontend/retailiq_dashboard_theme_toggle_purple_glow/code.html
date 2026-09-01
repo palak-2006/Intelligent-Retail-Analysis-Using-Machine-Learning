@@ -1,0 +1,551 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>RetailIQ - Analytics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "var(--color-on-surface)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "on-error": "var(--color-on-error)",
+                        "tertiary": "var(--color-tertiary)",
+                        "surface-tint": "var(--color-surface-tint)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "inverse-primary": "var(--color-inverse-primary)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "outline": "var(--color-outline)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "primary": "var(--color-primary)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "surface": "var(--color-surface)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "background": "var(--color-background)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "on-primary": "var(--color-on-primary)",
+                        "secondary": "var(--color-secondary)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "error": "var(--color-error)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "surface-bright": "var(--color-surface-bright)",
+                        "surface-container": "var(--color-surface-container)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "on-background": "var(--color-on-background)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "primary-container": "var(--color-primary-container)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                        "error-container": "var(--color-error-container)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "lg": "40px",
+                        "margin": "32px",
+                        "gutter": "24px",
+                        "xl": "64px",
+                        "sm": "16px",
+                        "xs": "8px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "data-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "data-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "data-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600", "textTransform": "uppercase" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-lg": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        :root {
+            --color-on-tertiary-fixed: #2e1065;
+            --color-on-secondary-fixed-variant: #404252;
+            --color-surface-container-lowest: #f0f2f8;
+            --color-primary-fixed-dim: #a5b4fc;
+            --color-secondary-container: #d8dae6;
+            --color-tertiary: #7c3aed;
+            --color-primary-fixed: #e0e2ff;
+            --color-on-background: #2e3040;
+            --color-on-tertiary-container: #3b1f63;
+            --color-on-tertiary-fixed-variant: #5b21b6;
+            --color-surface-container: #e2e4ea;
+            --color-surface-variant: #dcdee4;
+            --color-surface-container-low: #e5e7ed;
+            --color-tertiary-container: #a78bfa;
+            --color-surface-container-high: #dcdee4;
+            --color-outline: #8a8c9a;
+            --color-primary: #6366f1;
+            --color-surface-dim: #d4d6dc;
+            --color-surface-tint: #6366f1;
+            --color-error: #dc2626;
+            --color-background: #e8eaf0;
+            --color-on-tertiary: #ffffff;
+            --color-inverse-primary: #a5b4fc;
+            --color-on-surface-variant: #585a68;
+            --color-tertiary-fixed: #ede9fe;
+            --color-on-primary-container: #e0e2ff;
+            --color-surface-container-highest: #d6d8de;
+            --color-on-secondary: #ffffff;
+            --color-on-secondary-fixed: #1a1b26;
+            --color-surface-bright: #edeef4;
+            --color-on-error: #ffffff;
+            --color-tertiary-fixed-dim: #c4b5fd;
+            --color-secondary-fixed: #d8dae6;
+            --color-outline-variant: #d0d2dc;
+            --color-secondary-fixed-dim: #b8baca;
+            --color-surface: #e8eaf0;
+            --color-on-primary: #ffffff;
+            --color-error-container: #fee2e2;
+            --color-on-secondary-container: #585a68;
+            --color-on-primary-fixed-variant: #4338ca;
+            --color-on-primary-fixed: #1e1b4b;
+            --color-inverse-on-surface: #e8eaf0;
+            --color-on-surface: #2e3040;
+            --color-primary-container: #818cf8;
+            --color-inverse-surface: #2e3040;
+            --color-secondary: #6c6e7e;
+            --color-on-error-container: #991b1b;
+
+            --neo-shadow-light-1: #ffffff;
+            --neo-shadow-dark-1: #c5c7cc;
+            --neo-shadow-purple-light: #ffffff;
+            --neo-shadow-purple-dark: #d8b4fe;
+            --neo-bg: #e8eaf0;
+        }
+
+        .dark {
+            --color-surface: #13131b;
+            --color-surface-dim: #13131b;
+            --color-surface-bright: #393841;
+            --color-surface-container-lowest: #0d0d15;
+            --color-surface-container-low: #1b1b23;
+            --color-surface-container: #1f1f28;
+            --color-surface-container-high: #2a2a33;
+            --color-surface-container-highest: #34343f;
+            --color-on-surface: #e5e5eb;
+            --color-on-surface-variant: #c9c9d0;
+            --color-outline: #93939b;
+            --color-outline-variant: #48484f;
+            --color-inverse-surface: #e5e5eb;
+            --color-inverse-on-surface: #303037;
+            --color-primary: #bec2ff;
+            --color-on-primary: #2a2b84;
+            --color-primary-container: #4447a1;
+            --color-on-primary-container: #e0e0ff;
+            --color-secondary: #c9c5d0;
+            --color-on-secondary: #303037;
+            --color-secondary-container: #47464e;
+            --color-on-secondary-container: #e5e1eb;
+            --color-tertiary: #cbbffff;
+            --color-on-tertiary: #301f80;
+            --color-tertiary-container: #493998;
+            --color-on-tertiary-container: #e7deff;
+            --color-error: #ffb4ab;
+            --color-on-error: #690005;
+            --color-error-container: #93000a;
+            --color-on-error-container: #ffdad6;
+            --color-background: #13131b;
+            --color-on-background: #e5e5eb;
+
+            --neo-shadow-light-1: #1f1f2a;
+            --neo-shadow-dark-1: #07070c;
+            --neo-shadow-purple-light: #2a2b84;
+            --neo-shadow-purple-dark: #3b1f63;
+            --neo-bg: #13131b;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-on-surface);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .neo-shadow {
+            background: var(--neo-bg);
+            box-shadow: 8px 8px 16px var(--neo-shadow-dark-1), -8px -8px 16px var(--neo-shadow-light-1);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .neo-shadow:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 12px 12px 20px var(--neo-shadow-purple-dark), -12px -12px 20px var(--neo-shadow-purple-light);
+        }
+        
+        .neo-shadow-static {
+            background: var(--neo-bg);
+            box-shadow: 6px 6px 12px var(--neo-shadow-dark-1), -6px -6px 12px var(--neo-shadow-light-1);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .neo-inner {
+            background: var(--neo-bg);
+            box-shadow: inset 6px 6px 12px var(--neo-shadow-dark-1), inset -6px -6px 12px var(--neo-shadow-light-1);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: var(--color-on-primary);
+            border-radius: 1rem;
+            box-shadow: 4px 4px 10px var(--neo-shadow-dark-1), -4px -4px 10px var(--neo-shadow-light-1);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 6px 6px 14px var(--neo-shadow-purple-dark), -6px -6px 14px var(--neo-shadow-purple-light);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.2), inset -4px -4px 8px rgba(255,255,255,0.1);
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--neo-bg);
+            color: var(--color-primary);
+            border-radius: 1rem;
+            box-shadow: 4px 4px 10px var(--neo-shadow-dark-1), -4px -4px 10px var(--neo-shadow-light-1);
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            box-shadow: 6px 6px 14px var(--neo-shadow-purple-dark), -6px -6px 14px var(--neo-shadow-purple-light);
+            transform: translateY(-2px);
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        @keyframes slideInRight {
+            0% { transform: translateX(30px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--neo-bg); 
+            box-shadow: inset 2px 2px 5px var(--neo-shadow-dark-1), inset -2px -2px 5px var(--neo-shadow-light-1);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-surface-variant); 
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px var(--neo-shadow-dark-1), -2px -2px 5px var(--neo-shadow-light-1);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-surface-dim); 
+        }
+    </style>
+<script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</head>
+<body class="flex h-screen overflow-hidden font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen py-lg px-sm bg-background border-r border-outline-variant/30 w-64 z-50">
+<!-- Header -->
+<div class="mb-xl px-xs">
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">RetailIQ</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Intelligence Dashboard</p>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 space-y-4">
+<!-- Active: Analytics -->
+<a class="flex items-center gap-3 px-4 py-3 neo-inner text-primary font-bold duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-label-caps text-label-caps">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static hover:-translate-y-1 transition-all duration-200 ease-in-out hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)]" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-caps text-label-caps">Customers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static hover:-translate-y-1 transition-all duration-200 ease-in-out hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)]" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-caps text-label-caps">Products</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static hover:-translate-y-1 transition-all duration-200 ease-in-out hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)]" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-caps text-label-caps">AI/ML</span>
+</a>
+</div>
+<!-- Footer Links -->
+<div class="space-y-4 mb-lg">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static hover:-translate-y-1 transition-all duration-200 ease-in-out hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)]" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static hover:-translate-y-1 transition-all duration-200 ease-in-out hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)]" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-caps text-label-caps">Logout</span>
+</a>
+</div>
+<!-- CTA -->
+<button class="btn-primary w-full py-3 font-label-caps text-label-caps font-bold">Upgrade Plan</button>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-40 flex items-center justify-between px-margin py-sm w-full bg-background/80 backdrop-blur-xl border-b border-outline-variant/30">
+<div class="flex items-center gap-3 md:hidden">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">RetailIQ</h1>
+</div>
+<div class="hidden md:block flex-1"></div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full neo-shadow-static flex items-center justify-center text-on-surface-variant hover:text-primary transition-all hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)] hover:-translate-y-1" onclick="toggleTheme()">
+<span class="material-symbols-outlined text-sm dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined text-sm hidden dark:block">light_mode</span>
+</button>
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-all neo-shadow-static p-2 hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)] hover:-translate-y-1">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-all neo-shadow-static p-2 hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)] hover:-translate-y-1">settings</span>
+<div class="w-10 h-10 neo-shadow-static p-1 overflow-hidden hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)] transition-all cursor-pointer">
+<img alt="User profile" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJvmsFrv3RTnoYI-jFHG0Ak1l6NHA2hMUsbCBshIqKzUkSpkl0vl7zQxjVILHJVKjCGvsmZ8fJolMH_MyXPj3YGBgHYjxCNiNjf0b9oRbQvlVy4_B80dW-i_YHfximyUQuE1IwjIGVbI1DJi2QCOHygy-NIl3pOBERZ6XbHcinkJ0kV0uFqetLjTAFU3ZZswK9om0KHOVNvwflrBIMgPlRWrWI3cdmLG7LZIUueAb0GeTGUoa2HlgVKg">
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto p-4 md:p-gutter">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-lg gap-4 slide-in-right stagger-1">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Analytics Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-2xl">Real-time intelligence and ML-driven insights across your retail ecosystem.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-5 py-3 btn-secondary font-label-caps text-label-caps font-bold">Export Report</button>
+<button class="px-5 py-3 btn-primary font-label-caps text-label-caps font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">sync</span> Refresh Data
+                    </button>
+</div>
+</div>
+<!-- Metrics Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-xl slide-in-right stagger-2">
+<!-- Metric 1 -->
+<div class="neo-shadow p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Total Revenue</p>
+<h3 class="font-data-lg text-data-lg text-on-surface">$2.4M</h3>
+</div>
+<div class="p-3 neo-inner text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10 mt-6">
+<span class="material-symbols-outlined text-tertiary text-sm">trending_up</span>
+<span class="font-data-sm text-data-sm text-tertiary">+14.2%</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant text-xs ml-1">vs last month</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="neo-shadow p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Active Customers</p>
+<h3 class="font-data-lg text-data-lg text-on-surface">45.2K</h3>
+</div>
+<div class="p-3 neo-inner text-primary">
+<span class="material-symbols-outlined">groups</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10 mt-6">
+<span class="material-symbols-outlined text-tertiary text-sm">trending_up</span>
+<span class="font-data-sm text-data-sm text-tertiary">+5.8%</span>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="neo-shadow p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Top Category</p>
+<h3 class="font-data-lg text-data-lg text-on-surface">Electronics</h3>
+</div>
+<div class="p-3 neo-inner text-primary">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10 mt-6">
+<span class="px-3 py-1 neo-inner text-primary font-label-caps text-[10px] rounded-full">High Demand</span>
+</div>
+</div>
+<!-- Metric 4 -->
+<div class="neo-shadow p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div>
+<p class="font-label-caps text-label-caps text-tertiary mb-1">AI Forecast Accuracy</p>
+<h3 class="font-data-lg text-data-lg text-on-surface">94.8%</h3>
+</div>
+<div class="p-3 neo-inner text-tertiary">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+</div>
+<div class="flex items-center gap-2 relative z-10 mt-6">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant text-xs">Model Stable</span>
+</div>
+</div>
+</div>
+<!-- Central Chart Area -->
+<div class="neo-shadow flex flex-col mb-xl slide-in-right stagger-3">
+<div class="p-6 flex justify-between items-center z-10 relative border-b border-outline-variant/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary neo-shadow-static p-2">monitoring</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Revenue Trends vs AI Prediction</h3>
+</div>
+<div class="flex gap-3 bg-surface p-1 rounded-xl neo-inner">
+<button class="px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-colors text-xs font-label-caps">7D</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-white shadow-md text-xs font-label-caps font-bold">30D</button>
+<button class="px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary transition-colors text-xs font-label-caps">90D</button>
+</div>
+</div>
+<div class="p-6 relative h-96 w-full overflow-hidden bg-background rounded-b-[1.5rem]">
+<!-- Decorative Grid Lines for Chart -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50 px-6 py-8">
+<div class="w-full border-t border-outline-variant/30"></div>
+<div class="w-full border-t border-outline-variant/30"></div>
+<div class="w-full border-t border-outline-variant/30"></div>
+<div class="w-full border-t border-outline-variant/30"></div>
+<div class="w-full border-t border-outline-variant/30"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-[95%] h-[80%] relative">
+<!-- Simulated Chart Line using SVG -->
+<svg class="w-full h-full drop-shadow-md" preserveAspectRatio="none" viewBox="0 0 1000 300">
+<path class="text-primary" d="M0,250 C100,220 200,280 300,150 C400,20 500,180 600,100 C700,20 800,150 900,50 L1000,80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+<!-- Secondary prediction line -->
+<path class="text-tertiary" d="M0,260 C100,230 200,290 300,160 C400,30 500,190 600,110 C700,30 800,160 900,60 L1000,90" fill="none" opacity="0.6" stroke="currentColor" stroke-dasharray="8,8" stroke-width="3"></path>
+</svg>
+<!-- Data Points -->
+<div class="absolute w-4 h-4 bg-background border-4 border-primary rounded-full shadow-md" style="left: 30%; top: 48%;"></div>
+<div class="absolute w-4 h-4 bg-background border-4 border-primary rounded-full shadow-md" style="left: 60%; top: 32%;"></div>
+<div class="absolute w-4 h-4 bg-background border-4 border-primary rounded-full shadow-md" style="left: 90%; top: 15%;"></div>
+<!-- Tooltip Simulation -->
+<div class="absolute neo-shadow p-3 z-20" style="left: 62%; top: 20%;">
+<div class="text-on-surface-variant font-data-sm mb-1">May 24</div>
+<div class="text-primary font-data-lg font-bold">$124.5K</div>
+</div>
+</div>
+</div>
+<!-- X Axis Labels -->
+<div class="absolute bottom-4 left-0 right-0 flex justify-between px-8 text-xs font-data-sm text-on-surface-variant font-medium">
+<span>May 1</span>
+<span>May 8</span>
+<span>May 15</span>
+<span>May 22</span>
+<span>May 29</span>
+</div>
+</div>
+</div>
+<!-- Bottom Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter slide-in-right stagger-4">
+<!-- System Status -->
+<div class="neo-shadow p-6 lg:col-span-1 flex flex-col">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6">System Health</h3>
+<div class="space-y-6 flex-1">
+<div class="flex justify-between items-center p-3 neo-inner rounded-xl cursor-pointer hover:!shadow-[inset_6px_6px_12px_var(--neo-shadow-purple-dark),inset_-6px_-6px_12px_var(--neo-shadow-purple-light)] transition-all">
+<span class="font-body-md text-on-surface-variant font-medium">Data Pipeline</span>
+<span class="px-3 py-1 bg-surface text-primary font-label-caps text-xs rounded-full flex items-center gap-1 shadow-sm border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Optimal
+                            </span>
+</div>
+<div class="flex justify-between items-center p-3 neo-inner rounded-xl cursor-pointer hover:!shadow-[inset_6px_6px_12px_var(--neo-shadow-purple-dark),inset_-6px_-6px_12px_var(--neo-shadow-purple-light)] transition-all">
+<span class="font-body-md text-on-surface-variant font-medium">ML Prediction Engine</span>
+<span class="px-3 py-1 bg-surface text-primary font-label-caps text-xs rounded-full flex items-center gap-1 shadow-sm border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Optimal
+                            </span>
+</div>
+<div class="flex justify-between items-center p-3 neo-inner rounded-xl cursor-pointer hover:!shadow-[inset_6px_6px_12px_var(--neo-shadow-purple-dark),inset_-6px_-6px_12px_var(--neo-shadow-purple-light)] transition-all">
+<span class="font-body-md text-on-surface-variant font-medium">API Gateway</span>
+<span class="px-3 py-1 bg-surface text-error font-label-caps text-xs rounded-full flex items-center gap-1 shadow-sm border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-error"></span> Latency Warning
+                            </span>
+</div>
+</div>
+</div>
+<!-- Recent Anomalies -->
+<div class="neo-shadow p-6 lg:col-span-2">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary neo-shadow-static p-2">warning</span>
+                            Detected Anomalies
+                        </h3>
+<button class="text-sm font-label-caps text-primary hover:text-primary-container transition-colors">View All</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-start gap-4 p-4 neo-inner rounded-xl cursor-pointer hover:!shadow-[inset_6px_6px_12px_var(--neo-shadow-purple-dark),inset_-6px_-6px_12px_var(--neo-shadow-purple-light)] transition-all">
+<div class="mt-1 text-tertiary bg-surface p-2 rounded-lg shadow-sm border border-outline-variant/20">
+<span class="material-symbols-outlined">trending_down</span>
+</div>
+<div>
+<h4 class="font-body-md text-on-surface font-semibold">Sudden drop in Category: Home Goods</h4>
+<p class="text-sm text-on-surface-variant mt-1 font-data-sm">Detected 12 mins ago. Expected $12k volume, actual $4k.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 neo-inner rounded-xl cursor-pointer hover:!shadow-[inset_6px_6px_12px_var(--neo-shadow-purple-dark),inset_-6px_-6px_12px_var(--neo-shadow-purple-light)] transition-all">
+<div class="mt-1 text-primary bg-surface p-2 rounded-lg shadow-sm border border-outline-variant/20">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<h4 class="font-body-md text-on-surface font-semibold">Unusual spike in SKU: RT-892</h4>
+<p class="text-sm text-on-surface-variant mt-1 font-data-sm">Detected 45 mins ago. 300% increase over 7-day moving average.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for bottom padding -->
+<div class="h-lg"></div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Sign Up - RetailIQ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "var(--color-on-surface)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "on-error": "var(--color-on-error)",
+                        "tertiary": "var(--color-tertiary)",
+                        "surface-tint": "var(--color-surface-tint)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "inverse-primary": "var(--color-inverse-primary)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "outline": "var(--color-outline)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "primary": "var(--color-primary)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "surface": "var(--color-surface)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "background": "var(--color-background)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "on-primary": "var(--color-on-primary)",
+                        "secondary": "var(--color-secondary)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "error": "var(--color-error)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "surface-bright": "var(--color-surface-bright)",
+                        "surface-container": "var(--color-surface-container)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "on-background": "var(--color-on-background)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "primary-container": "var(--color-primary-container)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                        "error-container": "var(--color-error-container)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        :root {
+            --color-on-tertiary-fixed: #2e1065;
+            --color-on-secondary-fixed-variant: #404252;
+            --color-surface-container-lowest: #f0f2f8;
+            --color-primary-fixed-dim: #a5b4fc;
+            --color-secondary-container: #d8dae6;
+            --color-tertiary: #7c3aed;
+            --color-primary-fixed: #e0e2ff;
+            --color-on-background: #2e3040;
+            --color-on-tertiary-container: #3b1f63;
+            --color-on-tertiary-fixed-variant: #5b21b6;
+            --color-surface-container: #e2e4ea;
+            --color-surface-variant: #dcdee4;
+            --color-surface-container-low: #e5e7ed;
+            --color-tertiary-container: #a78bfa;
+            --color-surface-container-high: #dcdee4;
+            --color-outline: #8a8c9a;
+            --color-primary: #6366f1;
+            --color-surface-dim: #d4d6dc;
+            --color-surface-tint: #6366f1;
+            --color-error: #dc2626;
+            --color-background: #e8eaf0;
+            --color-on-tertiary: #ffffff;
+            --color-inverse-primary: #a5b4fc;
+            --color-on-surface-variant: #585a68;
+            --color-tertiary-fixed: #ede9fe;
+            --color-on-primary-container: #e0e2ff;
+            --color-surface-container-highest: #d6d8de;
+            --color-on-secondary: #ffffff;
+            --color-on-secondary-fixed: #1a1b26;
+            --color-surface-bright: #edeef4;
+            --color-on-error: #ffffff;
+            --color-tertiary-fixed-dim: #c4b5fd;
+            --color-secondary-fixed: #d8dae6;
+            --color-outline-variant: #d0d2dc;
+            --color-secondary-fixed-dim: #b8baca;
+            --color-surface: #e8eaf0;
+            --color-on-primary: #ffffff;
+            --color-error-container: #fee2e2;
+            --color-on-secondary-container: #585a68;
+            --color-on-primary-fixed-variant: #4338ca;
+            --color-on-primary-fixed: #1e1b4b;
+            --color-inverse-on-surface: #e8eaf0;
+            --color-on-surface: #2e3040;
+            --color-primary-container: #818cf8;
+            --color-inverse-surface: #2e3040;
+            --color-secondary: #6c6e7e;
+            --color-on-error-container: #991b1b;
+
+            --neo-shadow-light-1: #ffffff;
+            --neo-shadow-dark-1: #c5c7cc;
+            --neo-shadow-purple-light: #ffffff;
+            --neo-shadow-purple-dark: #d8b4fe;
+            --neo-bg: #e8eaf0;
+        }
+
+        .dark {
+            --color-surface: #13131b;
+            --color-surface-dim: #13131b;
+            --color-surface-bright: #393841;
+            --color-surface-container-lowest: #0d0d15;
+            --color-surface-container-low: #1b1b23;
+            --color-surface-container: #1f1f28;
+            --color-surface-container-high: #2a2a33;
+            --color-surface-container-highest: #34343f;
+            --color-on-surface: #e5e5eb;
+            --color-on-surface-variant: #c9c9d0;
+            --color-outline: #93939b;
+            --color-outline-variant: #48484f;
+            --color-inverse-surface: #e5e5eb;
+            --color-inverse-on-surface: #303037;
+            --color-primary: #bec2ff;
+            --color-on-primary: #2a2b84;
+            --color-primary-container: #4447a1;
+            --color-on-primary-container: #e0e0ff;
+            --color-secondary: #c9c5d0;
+            --color-on-secondary: #303037;
+            --color-secondary-container: #47464e;
+            --color-on-secondary-container: #e5e1eb;
+            --color-tertiary: #cbbffff;
+            --color-on-tertiary: #301f80;
+            --color-tertiary-container: #493998;
+            --color-on-tertiary-container: #e7deff;
+            --color-error: #ffb4ab;
+            --color-on-error: #690005;
+            --color-error-container: #93000a;
+            --color-on-error-container: #ffdad6;
+            --color-background: #13131b;
+            --color-on-background: #e5e5eb;
+
+            --neo-shadow-light-1: #1f1f2a;
+            --neo-shadow-dark-1: #07070c;
+            --neo-shadow-purple-light: #2a2b84;
+            --neo-shadow-purple-dark: #3b1f63;
+            --neo-bg: #13131b;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-on-surface);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .neo-shadow {
+            background: var(--neo-bg);
+            box-shadow: 8px 8px 16px var(--neo-shadow-dark-1), -8px -8px 16px var(--neo-shadow-light-1);
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .neo-shadow:hover {
+            box-shadow: 12px 12px 20px var(--neo-shadow-purple-dark), -12px -12px 20px var(--neo-shadow-purple-light);
+        }
+
+        .neo-shadow-static {
+            background: var(--neo-bg);
+            box-shadow: 6px 6px 12px var(--neo-shadow-dark-1), -6px -6px 12px var(--neo-shadow-light-1);
+            border-radius: 9999px; /* For toggle */
+            transition: all 0.3s ease;
+        }
+
+        .neo-inner {
+            background: var(--neo-bg);
+            box-shadow: inset 4px 4px 8px var(--neo-shadow-dark-1), inset -4px -4px 8px var(--neo-shadow-light-1);
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .neo-inner:focus-within {
+            box-shadow: inset 4px 4px 8px rgba(99, 102, 241, 0.25), inset -4px -4px 8px rgba(255,255,255,0.1) !important;
+        }
+
+        .btn-primary {
+            background: var(--neo-bg);
+            color: var(--color-primary);
+            border-radius: 1rem;
+            box-shadow: 6px 6px 12px var(--neo-shadow-dark-1), -6px -6px 12px var(--neo-shadow-light-1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 6px 6px 16px var(--neo-shadow-purple-dark), -6px -6px 16px var(--neo-shadow-purple-light);
+            transform: scale(1.02);
+        }
+        .btn-primary:active {
+            box-shadow: inset 4px 4px 8px rgba(99, 102, 241, 0.25), inset -4px -4px 8px rgba(255,255,255,0.1);
+            transform: scale(0.98);
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="font-body min-h-screen flex items-center justify-center p-4 selection:bg-primary-container selection:text-on-primary-container">
+<main class="w-full max-w-md mx-auto slide-in-right delay-100 flex flex-col items-center justify-center relative">
+<!-- Main Card -->
+<div class="w-full p-8 md:p-10 neo-shadow relative overflow-hidden">
+<!-- Theme Toggle -->
+<button aria-label="Toggle theme" class="absolute top-6 right-6 w-10 h-10 neo-shadow-static flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary hover:!shadow-[6px_6px_12px_var(--neo-shadow-purple-dark),-6px_-6px_12px_var(--neo-shadow-purple-light)]" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined text-[20px] dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined text-[20px] hidden dark:block">light_mode</span>
+</button>
+<!-- Header Section -->
+<div class="flex flex-col items-center mb-8">
+<div class="w-16 h-16 rounded-2xl neo-shadow-static flex items-center justify-center mb-6 overflow-hidden !rounded-2xl">
+<img alt="RetailIQ Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XNWaDYqESn9L4npk6kajTg8onHH-YLsYHmP9QcM4JER1DBaR7ddyV5NM4KhUaJsVnL43CvkVsVtpoUmRfWdHgP1FTSINn_Z0CuYhF6K5hkbqX8efwAlvrXMHJTYNqI2QbZI1nMlO983NJ4FJ0l04qAyhnx541bW3dZziHg7Y1FjHE4pmwRP_w7yQQ2lKcz3lO44gsVey8QvBjR8td4w66e8Md-LKtYkneWAP2Hx8EnWHvw3hNO8WDbgPX1">
+</div>
+<h1 class="font-headline text-3xl font-semibold text-on-surface tracking-tight mb-2">Join RetailIQ</h1>
+<p class="text-on-surface-variant text-center">Start your journey to intelligent analytics today.</p>
+</div>
+<!-- Form -->
+<form action="#" class="space-y-6" method="POST">
+<!-- Full Name Input -->
+<div class="space-y-2">
+<label class="block text-sm font-medium text-on-surface-variant px-1" for="name">Full Name</label>
+<div class="relative neo-inner rounded-xl focus-within:ring-0 focus-within:outline-none">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+<input class="w-full bg-transparent border-none rounded-xl py-3 pl-12 pr-4 text-on-surface placeholder:text-outline focus:ring-0 focus:outline-none" id="name" name="name" placeholder="John Doe" required="" type="text">
+</div>
+</div>
+<!-- Work Email Input -->
+<div class="space-y-2">
+<label class="block text-sm font-medium text-on-surface-variant px-1" for="email">Work Email</label>
+<div class="relative neo-inner rounded-xl focus-within:ring-0 focus-within:outline-none">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">mail</span>
+</div>
+<input class="w-full bg-transparent border-none rounded-xl py-3 pl-12 pr-4 text-on-surface placeholder:text-outline focus:ring-0 focus:outline-none" id="email" name="email" placeholder="john@company.com" required="" type="email">
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<label class="block text-sm font-medium text-on-surface-variant px-1" for="password">Password</label>
+<div class="relative neo-inner rounded-xl focus-within:ring-0 focus-within:outline-none">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<input class="w-full bg-transparent border-none rounded-xl py-3 pl-12 pr-4 text-on-surface placeholder:text-outline focus:ring-0 focus:outline-none" id="password" name="password" placeholder="••••••••" required="" type="password">
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-primary transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
+</button>
+</div>
+</div>
+<!-- Terms -->
+<div class="flex items-center gap-3 px-1 pt-2">
+<div class="relative flex items-center justify-center">
+<input class="peer sr-only" id="terms" name="terms" required="" type="checkbox">
+<div class="w-5 h-5 rounded bg-background neo-inner flex items-center justify-center peer-checked:text-primary text-transparent transition-colors cursor-pointer" onclick="document.getElementById('terms').click()">
+<span class="material-symbols-outlined text-[16px] pointer-events-none">check</span>
+</div>
+</div>
+<label class="text-sm text-on-surface-variant cursor-pointer select-none" for="terms">
+                        I agree to the <a class="text-primary hover:text-tertiary transition-colors font-medium" href="#">Terms</a> and <a class="text-primary hover:text-tertiary transition-colors font-medium" href="#">Privacy Policy</a>
+</label>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full font-semibold py-4 px-6 rounded-xl btn-primary flex items-center justify-center gap-2 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background" type="submit">
+<span>Create Account</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Footer -->
+<div class="mt-8 text-center">
+<p class="text-sm text-on-surface-variant">
+                    Already have an account? 
+                    <a class="text-primary font-medium hover:text-tertiary transition-colors ml-1 inline-block relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left" href="#">
+                        Sign In
+                    </a>
+</p>
+</div>
+</div>
+</main>
+<!-- Decorative background elements to reinforce Neomorphic feel -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary opacity-5 blur-[100px] pointer-events-none -z-10 dark:opacity-10"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-tertiary opacity-5 blur-[100px] pointer-events-none -z-10 dark:opacity-10"></div>
+</body></html>
