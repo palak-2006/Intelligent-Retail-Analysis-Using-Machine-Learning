@@ -23,4 +23,8 @@ data/train.csv
 data/online_retail_II.xlsx
 data/online_retail_clean.csv
 
-.venv/
+# SQLite database
+*.db
+*.sqlite
+*.sqlite3
+data/*.db

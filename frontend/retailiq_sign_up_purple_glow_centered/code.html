@@ -3,8 +3,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Sign Up - RetailIQ</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -223,6 +223,11 @@
             box-shadow: inset 4px 4px 8px rgba(99, 102, 241, 0.25), inset -4px -4px 8px rgba(255,255,255,0.1);
             transform: scale(0.98);
         }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .slide-in-right {
             animation: slideInRight 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
@@ -235,6 +240,46 @@
                 opacity: 1;
                 transform: translateX(0);
             }
+        }
+
+        /* Error message animation */
+        @keyframes shakeIn {
+            0%   { opacity: 0; transform: translateX(-8px); }
+            40%  { transform: translateX(6px); }
+            70%  { transform: translateX(-4px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        .error-msg {
+            animation: shakeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Password strength bar */
+        .strength-bar-track {
+            height: 4px;
+            border-radius: 9999px;
+            background: var(--neo-shadow-dark-1);
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .strength-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.4s ease, background-color 0.4s ease;
+            width: 0%;
+        }
+
+        /* Spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
         }
     </style>
 </head>
@@ -256,7 +301,7 @@
 <p class="text-on-surface-variant text-center">Start your journey to intelligent analytics today.</p>
 </div>
 <!-- Form -->
-<form action="#" class="space-y-6" method="POST">
+<form class="space-y-6" id="signupForm" novalidate>
 <!-- Full Name Input -->
 <div class="space-y-2">
 <label class="block text-sm font-medium text-on-surface-variant px-1" for="name">Full Name</label>
@@ -284,29 +329,42 @@
 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
 <span class="material-symbols-outlined text-outline">lock</span>
 </div>
-<input class="w-full bg-transparent border-none rounded-xl py-3 pl-12 pr-4 text-on-surface placeholder:text-outline focus:ring-0 focus:outline-none" id="password" name="password" placeholder="••••••••" required="" type="password">
-<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-primary transition-colors focus:outline-none" type="button">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">visibility</span>
+<input class="w-full bg-transparent border-none rounded-xl py-3 pl-12 pr-10 text-on-surface placeholder:text-outline focus:ring-0 focus:outline-none" id="password" name="password" placeholder="••••••••" required="" type="password">
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-primary transition-colors focus:outline-none" id="togglePassword" type="button" aria-label="Toggle password visibility">
+<span class="material-symbols-outlined" id="togglePasswordIcon" style="font-variation-settings: 'FILL' 0;">visibility</span>
 </button>
+</div>
+<!-- Password Strength Indicator -->
+<div id="strengthContainer" style="display:none;">
+    <div class="strength-bar-track">
+        <div class="strength-bar-fill" id="strengthBar"></div>
+    </div>
+    <p class="text-xs mt-1 px-1 font-medium" id="strengthLabel" style="color: var(--color-outline);"></p>
 </div>
 </div>
 <!-- Terms -->
 <div class="flex items-center gap-3 px-1 pt-2">
 <div class="relative flex items-center justify-center">
 <input class="peer sr-only" id="terms" name="terms" required="" type="checkbox">
-<div class="w-5 h-5 rounded bg-background neo-inner flex items-center justify-center peer-checked:text-primary text-transparent transition-colors cursor-pointer" onclick="document.getElementById('terms').click()">
-<span class="material-symbols-outlined text-[16px] pointer-events-none">check</span>
+<div id="termsBox" class="w-5 h-5 rounded bg-background neo-inner flex items-center justify-center peer-checked:text-primary text-transparent transition-colors cursor-pointer" onclick="document.getElementById('terms').click()">
+<span class="material-symbols-outlined text-[16px] pointer-events-none" style="font-variation-settings: 'FILL' 1;">check</span>
 </div>
 </div>
 <label class="text-sm text-on-surface-variant cursor-pointer select-none" for="terms">
-                        I agree to the <a class="text-primary hover:text-tertiary transition-colors font-medium" href="#">Terms</a> and <a class="text-primary hover:text-tertiary transition-colors font-medium" href="#">Privacy Policy</a>
+                        I agree to the <a class="text-primary hover:text-tertiary transition-colors font-medium" href="#" onclick="event.preventDefault(); event.stopPropagation();">Terms</a> and <a class="text-primary hover:text-tertiary transition-colors font-medium" href="#" onclick="event.preventDefault(); event.stopPropagation();">Privacy Policy</a>
 </label>
+</div>
+<!-- Error Message -->
+<div id="errorMsg" style="display:none; background: var(--color-error-container); color: var(--color-on-error-container);" class="error-msg flex items-start gap-2 px-4 py-3 rounded-xl text-sm font-medium">
+    <span class="material-symbols-outlined text-[18px] flex-shrink-0 mt-0.5">error</span>
+    <span id="errorText"></span>
 </div>
 <!-- Submit Button -->
 <div class="pt-4">
-<button class="w-full font-semibold py-4 px-6 rounded-xl btn-primary flex items-center justify-center gap-2 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background" type="submit">
-<span>Create Account</span>
-<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<button class="w-full font-semibold py-4 px-6 rounded-xl btn-primary flex items-center justify-center gap-2 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background" id="submitBtn" type="submit">
+<span id="submitBtnText">Create Account</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" id="submitBtnIcon">arrow_forward</span>
+<span class="spinner" id="submitSpinner" style="display:none;"></span>
 </button>
 </div>
 </form>
@@ -314,7 +372,7 @@
 <div class="mt-8 text-center">
 <p class="text-sm text-on-surface-variant">
                     Already have an account? 
-                    <a class="text-primary font-medium hover:text-tertiary transition-colors ml-1 inline-block relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left" href="#">
+                    <a id="signin-link" class="text-primary font-medium hover:text-tertiary transition-colors ml-1 inline-block relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left" href="/login">
                         Sign In
                     </a>
 </p>
@@ -324,4 +382,187 @@
 <!-- Decorative background elements to reinforce Neomorphic feel -->
 <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary opacity-5 blur-[100px] pointer-events-none -z-10 dark:opacity-10"></div>
 <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-tertiary opacity-5 blur-[100px] pointer-events-none -z-10 dark:opacity-10"></div>
+
+<script>
+    const BASE_URL = window.location.origin.startsWith('http') ? window.location.origin : 'http://localhost:5000';
+
+    function getPageUrl(page) {
+        if (window.location.protocol === 'file:') {
+            const map = {
+                dashboard: '../retailiq_dashboard_theme_toggle_purple_glow/code.html',
+                login: '../retailiq_login_silk_white_bg/code.html',
+                signup: '../retailiq_sign_up_purple_glow_centered/code.html',
+                sales: '../retailiq_sales_analytics_theme_toggle_pie_chart/code.html',
+                segmentation: '../retailiq_customer_segmentation_theme_toggle_purple_glow/code.html',
+                'customer-details': '../retailiq_customer_details_theme_toggle_purple_glow/code.html'
+            };
+            return map[page] || page;
+        }
+        return '/' + page;
+    }
+
+    // ── Setup Links & Interactions ────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        const signinLink = document.getElementById('signin-link');
+        if (signinLink) {
+            signinLink.href = getPageUrl('login');
+        }
+
+        const termsInput = document.getElementById('terms');
+        const termsBox   = document.getElementById('termsBox');
+        if (termsInput && termsBox) {
+            termsInput.addEventListener('change', function() {
+                if (this.checked) {
+                    termsBox.classList.remove('text-transparent');
+                    termsBox.classList.add('text-primary');
+                } else {
+                    termsBox.classList.remove('text-primary');
+                    termsBox.classList.add('text-transparent');
+                }
+            });
+        }
+    });
+
+    // ── Show / Hide Password ───────────────────────────────────────────────────
+    const togglePasswordBtn  = document.getElementById('togglePassword');
+    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+    const passwordInput      = document.getElementById('password');
+
+    togglePasswordBtn.addEventListener('click', function () {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePasswordIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+    });
+
+    // ── Password Strength Indicator ────────────────────────────────────────────
+    const strengthContainer = document.getElementById('strengthContainer');
+    const strengthBar       = document.getElementById('strengthBar');
+    const strengthLabel     = document.getElementById('strengthLabel');
+
+    function getPasswordStrength(pwd) {
+        if (!pwd) return { score: 0, label: '', color: '' };
+        let score = 0;
+        if (pwd.length >= 8)  score++;
+        if (pwd.length >= 12) score++;
+        if (/[A-Z]/.test(pwd)) score++;
+        if (/[0-9]/.test(pwd)) score++;
+        if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+        if (score <= 1) return { pct: '33%',  label: 'Weak',   color: '#dc2626' };
+        if (score <= 3) return { pct: '66%',  label: 'Medium', color: '#f97316' };
+        return               { pct: '100%', label: 'Strong', color: '#16a34a' };
+    }
+
+    passwordInput.addEventListener('input', function () {
+        const val = this.value;
+        if (!val) {
+            strengthContainer.style.display = 'none';
+            return;
+        }
+        strengthContainer.style.display = 'block';
+        const { pct, label, color } = getPasswordStrength(val);
+        strengthBar.style.width           = pct;
+        strengthBar.style.backgroundColor = color;
+        strengthLabel.textContent         = label;
+        strengthLabel.style.color         = color;
+    });
+
+    // ── Error display helper ───────────────────────────────────────────────────
+    function showError(message) {
+        const errorMsg  = document.getElementById('errorMsg');
+        const errorText = document.getElementById('errorText');
+        if (errorText) errorText.textContent = message;
+        if (errorMsg) {
+            errorMsg.style.display = 'flex';
+            errorMsg.classList.remove('error-msg');
+            void errorMsg.offsetWidth; // Force DOM reflow to re-trigger CSS shake animation
+            errorMsg.classList.add('error-msg');
+        }
+    }
+
+    function hideError() {
+        const errorMsg = document.getElementById('errorMsg');
+        if (errorMsg) {
+            errorMsg.style.display = 'none';
+        }
+    }
+
+    // ── Loading state helpers ──────────────────────────────────────────────────
+    function setLoading(isLoading) {
+        const btn     = document.getElementById('submitBtn');
+        const btnText = document.getElementById('submitBtnText');
+        const btnIcon = document.getElementById('submitBtnIcon');
+        const spinner = document.getElementById('submitSpinner');
+
+        if (btn) btn.disabled          = isLoading;
+        if (btnText) btnText.textContent   = isLoading ? 'Creating Account…' : 'Create Account';
+        if (btnIcon) btnIcon.style.display = isLoading ? 'none' : 'inline-block';
+        if (spinner) spinner.style.display = isLoading ? 'inline-block' : 'none';
+    }
+
+    // ── Form Submit ────────────────────────────────────────────────────────────
+    document.getElementById('signupForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        hideError();
+
+        const name     = document.getElementById('name').value.trim();
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const terms    = document.getElementById('terms').checked;
+
+        // Client-side guards
+        if (!name || !email || !password) {
+            showError('Please fill in all required fields.');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('Please enter a valid email address.');
+            return;
+        }
+
+        if (password.length < 6) {
+            showError('Password must be at least 6 characters.');
+            return;
+        }
+
+        if (!terms) {
+            showError('You must agree to the Terms and Privacy Policy to continue.');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch(`${BASE_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.status === 201) {
+                // Success — persist user session and redirect
+                if (data.token) localStorage.setItem('retailiq_token', data.token);
+                if (data.name  || name)  localStorage.setItem('retailiq_name',  data.name  || name);
+                if (data.email || email) localStorage.setItem('retailiq_email', data.email || email);
+                window.location.href = getPageUrl('dashboard');
+            } else if (response.status === 409) {
+                showError('An account with this email already exists. Please sign in instead.');
+            } else if (response.status === 400) {
+                const msg = data.message || data.error || 'Invalid details. Please check your input and try again.';
+                showError(msg);
+            } else {
+                const msg = data.message || data.error || 'Something went wrong. Please try again later.';
+                showError(msg);
+            }
+        } catch (err) {
+            showError('Unable to connect to the server. Please check your connection and try again.');
+        } finally {
+            setLoading(false);
+        }
+    });
+</script>
 </body></html>
