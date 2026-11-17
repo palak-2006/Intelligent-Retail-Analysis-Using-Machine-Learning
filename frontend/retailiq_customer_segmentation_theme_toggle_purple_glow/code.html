@@ -71,7 +71,8 @@
                 signup: '../retailiq_sign_up_purple_glow_centered/code.html',
                 sales: '../retailiq_sales_analytics_theme_toggle_pie_chart/code.html',
                 segmentation: '../retailiq_customer_segmentation_theme_toggle_purple_glow/code.html',
-                'customer-details': '../retailiq_customer_details_theme_toggle_purple_glow/code.html'
+                'customer-details': '../retailiq_customer_details_theme_toggle_purple_glow/code.html',
+                clv: '../retailiq_clv_analytics_theme_toggle_purple_glow/code.html'
             };
             return map[page] || page;
         }
@@ -227,7 +228,11 @@
     <ul class="flex flex-col gap-xs flex-1">
         <li><a class="flex items-center gap-sm px-sm py-xs rounded-lg text-on-surface-variant dark:text-outline hover:text-primary transition-colors cursor-pointer" onclick="window.location.href=getPageUrl('dashboard')"><span class="material-symbols-outlined text-[20px]">monitoring</span><span class="font-data-sm text-data-sm font-medium">Analytics</span></a></li>
         <li><a class="flex items-center gap-sm px-sm py-xs rounded-lg bg-primary/10 text-primary neo-shadow-inset cursor-pointer" onclick="window.location.href=getPageUrl('segmentation')"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">group</span><span class="font-data-sm text-data-sm font-medium">Customers</span></a></li>
-        <li><a class="flex items-center gap-sm px-sm py-xs rounded-lg text-on-surface-variant dark:text-outline hover:text-primary transition-colors cursor-pointer" onclick="window.location.href=getPageUrl('sales')"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="font-data-sm text-data-sm font-medium">Sales & Forecast</span></a></li>
+        <li><a class="flex items-center gap-sm px-sm py-xs rounded-lg text-on-surface-variant dark:text-outline hover:text-primary transition-colors cursor-pointer" onclick="window.location.href=getPageUrl('sales')"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="font-data-sm text-data-sm font-medium">Sales & Forecast</span></a>
+        <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static hover:-translate-y-1 transition-all duration-200 cursor-pointer" onclick="window.location.href=getPageUrl('clv')">
+            <span class="material-symbols-outlined">diamond</span>
+            <span class="font-label-caps text-label-caps">CLV Intelligence</span>
+        </a></li>
         <li><a class="flex items-center gap-sm px-sm py-xs rounded-lg text-on-surface-variant dark:text-outline hover:text-primary transition-colors cursor-pointer" onclick="window.location.href=getPageUrl('customer-details')"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-data-sm text-data-sm font-medium">Customer Profile</span></a></li>
     </ul>
     <div class="mt-auto pt-lg">

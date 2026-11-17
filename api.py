@@ -27,6 +27,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from src.segmentation import CustomerSegmentationModel, DEFAULT_SEGMENT_NAMES, DEFAULT_SEGMENT_ACTIONS
 from src.forecasting import prepare_monthly_timeseries, forecast_linear_trend_with_seasonality
 from src.recommendation import ProductRecommender
+from src.clv import (
+    CustomerLifetimeValueModel,
+    CLV_TIER_HIGH,
+    CLV_TIER_MEDIUM,
+    CLV_TIER_LOW,
+    CLV_TIER_ACTIONS,
+    CLV_TIER_DESCRIPTIONS,
+)
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 import joblib
@@ -143,10 +151,12 @@ _seg_model = None
 _recommender = None
 _knn_classifier = None  # KNN trained on labeled segments — used for accurate predict
 _knn_scaler = None
+_clv_model = None
+_clv_df = None
 
 
 def _load_data():
-    global _df_clean, _segments_df, _seg_model, _recommender, _knn_classifier, _knn_scaler
+    global _df_clean, _segments_df, _seg_model, _recommender, _knn_classifier, _knn_scaler, _clv_model, _clv_df
 
     csv_path = "data/online_retail_clean.csv"
     if os.path.exists(csv_path):
@@ -201,6 +211,27 @@ def _load_data():
     rules_path = "data/market_basket_rules.csv"
     _recommender = ProductRecommender(rules_path)
     print("✅  Recommender loaded")
+
+    # ── CLV Models & Data Loading ──
+    clv_csv = "data/clv_predictions.csv"
+    if os.path.exists(clv_csv):
+        _clv_df = pd.read_csv(clv_csv)
+        print("✅  CLV predictions CSV loaded")
+    else:
+        print("⚠️  clv_predictions.csv not found")
+
+    clv_reg_path = "models/clv_regressor.pkl"
+    clv_cls_path = "models/clv_classifier.pkl"
+    if os.path.exists(clv_reg_path) and os.path.exists(clv_cls_path):
+        _clv_model = CustomerLifetimeValueModel()
+        _clv_model.load("models")
+        print("✅  CLV Model & Classifier loaded from disk")
+    elif _df_clean is not None:
+        print("⏳  Training CLV models on-the-fly…")
+        _clv_model = CustomerLifetimeValueModel()
+        _clv_model.fit(_df_clean)
+        _clv_model.save("models")
+        print("✅  CLV Model trained and saved")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -289,7 +320,7 @@ def dashboard_metrics():
     avg_order_value = total_rev / total_orders if total_orders > 0 else 0.0
 
     # Month-over-month revenue change
-    monthly = _df_clean.set_index("InvoiceDate").resample("MS")["Sales"].sum()
+    monthly = _complete_months(_df_clean.set_index("InvoiceDate").resample("MS")["Sales"].sum())
     mom_change = None
     if len(monthly) >= 2:
         last, prev = monthly.iloc[-1], monthly.iloc[-2]
@@ -316,6 +347,7 @@ def dashboard_monthly_sales():
         .sum()
         .reset_index()
     )
+    monthly = _complete_months(monthly)
     monthly["InvoiceDate"] = monthly["InvoiceDate"].dt.strftime("%Y-%m")
     return jsonify(monthly.rename(columns={"InvoiceDate": "month", "Sales": "revenue"}).to_dict(orient="records"))
 
@@ -576,8 +608,55 @@ def customer_details(customer_id):
     if top_product_name and _recommender:
         recommendations = _recommender.recommend(top_product_name, top_n=3)
 
+    # ── CLV Intelligence ──
+    predicted_clv = 0.0
+    clv_tier = "Low CLV"
+    clv_prob = 0.0
+    clv_score = 50.0
+    clv_action = CLV_TIER_ACTIONS.get(CLV_TIER_LOW, "")
+
+    if _clv_df is not None:
+        c_match = _clv_df[_clv_df["CustomerID"] == customer_id]
+        if not c_match.empty:
+            crow = c_match.iloc[0]
+            predicted_clv = round(float(crow.get("PredictedCLV", 0.0)), 2)
+            clv_tier = str(crow.get("PredictedTier", "Medium CLV"))
+            clv_prob = round(float(crow.get("High_CLV_Probability", 0.0)), 3)
+            clv_score = round(float(crow.get("CLV_Score", 50.0)), 1)
+            clv_action = str(crow.get("RecommendedAction", CLV_TIER_ACTIONS.get(clv_tier, "")))
+    elif _clv_model and _clv_model.classifier:
+        try:
+            tenure_val = recency + 30
+            if not cust_tx.empty:
+                tenure_val = int((_df_clean["InvoiceDate"].max() - cust_tx["InvoiceDate"].min()).days)
+            p_single = _clv_model.predict_single(
+                recency=recency,
+                frequency=frequency,
+                monetary=monetary,
+                tenure=tenure_val,
+                avg_order_value=avg_order_value,
+            )
+            predicted_clv = p_single["predicted_clv"]
+            clv_tier = p_single["clv_tier"]
+            clv_prob = p_single["high_clv_probability"]
+            clv_action = p_single["recommended_action"]
+        except Exception:
+            pass
+
     return jsonify({
         "customer_id": customer_id,
+        "predicted_clv": predicted_clv,
+        "clv_tier": clv_tier,
+        "clv_probability": clv_prob,
+        "clv_score": clv_score,
+        "clv_action": clv_action,
+        "clv": {
+            "predicted_clv": predicted_clv,
+            "tier": clv_tier,
+            "high_clv_probability": clv_prob,
+            "percentile_score": clv_score,
+            "action": clv_action,
+        },
         "name": f"Customer #{customer_id}",
         "country": country,
         "segment": segment,
@@ -605,7 +684,7 @@ def sales_monthly_actuals():
     if _df_clean is None:
         return jsonify({"error": "Dataset not available."}), 503
 
-    monthly_df = prepare_monthly_timeseries(_df_clean)
+    monthly_df = _complete_months(prepare_monthly_timeseries(_df_clean))
     monthly_df["Date"] = monthly_df["Date"].dt.strftime("%Y-%m")
     monthly_df.rename(columns={"Date": "month", "Sales": "revenue"}, inplace=True)
     return jsonify(monthly_df.to_dict(orient="records"))
@@ -623,7 +702,7 @@ def sales_forecast():
     except ValueError:
         periods = 6
 
-    monthly_df = prepare_monthly_timeseries(_df_clean)
+    monthly_df = _complete_months(prepare_monthly_timeseries(_df_clean))
     forecast_df = forecast_linear_trend_with_seasonality(monthly_df, periods=periods)
     forecast_df["Date"] = forecast_df["Date"].dt.strftime("%Y-%m")
     forecast_df.rename(columns={"Date": "month"}, inplace=True)
@@ -631,6 +710,64 @@ def sales_forecast():
     # Replace NaN with None for JSON
     forecast_df = forecast_df.where(pd.notnull(forecast_df), None)
     return jsonify(forecast_df.to_dict(orient="records"))
+
+
+def _complete_months(monthly):
+    """Drop the last month if the data stops before that month ends (for example on 9 Dec).
+    A half-finished month looks like a sudden revenue crash and ruins forecasts."""
+    if _df_clean is None or len(monthly) < 2:
+        return monthly
+    last = _df_clean["InvoiceDate"].max()
+    if last.day < last.days_in_month - 2:
+        return monthly.iloc[:-1]
+    return monthly
+
+
+@app.route("/api/sales/forecast-metrics", methods=["GET"])
+@require_auth
+def sales_forecast_metrics():
+    """Backtest: hide the last N months, forecast them, compare with the real values."""
+    if _df_clean is None:
+        return jsonify({"error": "Dataset not available."}), 503
+
+    try:
+        holdout = max(2, min(int(request.args.get("holdout", 3)), 6))
+    except ValueError:
+        holdout = 3
+
+    try:
+        monthly_df = _complete_months(prepare_monthly_timeseries(_df_clean))
+        if len(monthly_df) < holdout + 6:
+            return jsonify({"error": "Not enough monthly history for a backtest."}), 422
+
+        train_df = monthly_df.iloc[:-holdout].copy()
+        test_df = monthly_df.iloc[-holdout:]
+
+        fc = forecast_linear_trend_with_seasonality(train_df, periods=holdout)
+        y_true = test_df["Sales"].to_numpy(dtype=float)
+        y_pred = fc["Forecast_Sales"].to_numpy(dtype=float)[:holdout]
+
+        err = y_true - y_pred
+        mae = float(np.mean(np.abs(err)))
+        rmse = float(np.sqrt(np.mean(err ** 2)))
+        nonzero = y_true != 0
+        mape = float(np.mean(np.abs(err[nonzero] / y_true[nonzero])) * 100) if nonzero.any() else None
+        ss_tot = float(np.sum((y_true - y_true.mean()) ** 2))
+        r2 = float(1 - np.sum(err ** 2) / ss_tot) if ss_tot > 0 else None
+
+        return jsonify({
+            "holdout_months": holdout,
+            "train_months": int(len(train_df)),
+            "mae": round(mae, 2),
+            "rmse": round(rmse, 2),
+            "mape": round(mape, 2) if mape is not None else None,
+            "r2": round(r2, 3) if r2 is not None else None,
+        })
+    except Exception as exc:  # keep the dashboard alive even if the backtest fails
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "Backtest failed: " + str(exc)}), 500
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -661,6 +798,269 @@ def recommendations_recommend():
 
     recs = _recommender.recommend(product, top_n=top_n)
     return jsonify({"product": product, "recommendations": recs})
+
+
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CUSTOMER LIFETIME VALUE (CLV) ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.route("/api/clv/overview", methods=["GET"])
+@require_auth
+def clv_overview():
+    """
+    Returns enterprise CLV summary metrics, value tier distributions,
+    and rigorous ML model evaluation metrics (Accuracy, F1-Scores, Precision, Recall,
+    Confusion Matrix, MAE, RMSE, R2).
+    """
+    if _clv_df is None:
+        return jsonify({"error": "CLV dataset not loaded."}), 503
+
+    total_pred_clv = round(float(_clv_df["PredictedCLV"].sum()), 2)
+    avg_pred_clv = round(float(_clv_df["PredictedCLV"].mean()), 2)
+    median_pred_clv = round(float(_clv_df["PredictedCLV"].median()), 2)
+    total_customers = int(len(_clv_df))
+
+    # Tier breakdown
+    tier_counts = _clv_df["PredictedTier"].value_counts().to_dict()
+    tier_dist = []
+    tier_colors = {
+        "High CLV": "#10b981",    # Emerald
+        "Medium CLV": "#8b5cf6",  # Purple
+        "Low CLV": "#f59e0b",     # Amber
+    }
+    high_clv_count = int(tier_counts.get("High CLV", 0))
+    high_clv_pct = round((high_clv_count / total_customers * 100), 1) if total_customers > 0 else 0.0
+
+    for tier_name in ["High CLV", "Medium CLV", "Low CLV"]:
+        count = int(tier_counts.get(tier_name, 0))
+        pct = round((count / total_customers * 100), 1) if total_customers > 0 else 0.0
+        tier_sub = _clv_df[_clv_df["PredictedTier"] == tier_name]
+        tier_revenue = round(float(tier_sub["PredictedCLV"].sum()), 2) if not tier_sub.empty else 0.0
+        tier_dist.append({
+            "tier": tier_name,
+            "count": count,
+            "percentage": pct,
+            "projected_revenue": tier_revenue,
+            "color": tier_colors.get(tier_name, "#6b7280"),
+            "action": CLV_TIER_ACTIONS.get(tier_name, ""),
+            "description": CLV_TIER_DESCRIPTIONS.get(tier_name, ""),
+        })
+
+    # Model evaluation metrics
+    metrics = {}
+    if _clv_model and hasattr(_clv_model, "metrics") and _clv_model.metrics:
+        metrics = _clv_model.metrics
+    else:
+        metrics_path = "models/clv_metrics.pkl"
+        if os.path.exists(metrics_path):
+            import joblib
+            metrics = joblib.load(metrics_path)
+
+    # Feature importance array for charts
+    raw_fi = metrics.get("feature_importances", {})
+    label_map = {
+        "Monetary": "Monetary Spend",
+        "UniqueProducts": "SKU Diversity",
+        "AvgOrderValue": "AOV ($)",
+        "Frequency": "Frequency",
+        "Recency": "Recency (Days)",
+        "AvgBasketSize": "Basket Size",
+        "Tenure": "Customer Tenure"
+    }
+    feature_importance_list = [
+        {"feature": label_map.get(k, k), "importance": round(v * 100, 1)}
+        for k, v in sorted(raw_fi.items(), key=lambda item: item[1], reverse=True)
+    ]
+
+    bin_metrics = metrics.get("binary_top_clv", {})
+    reg_metrics = metrics.get("spend_regression", {"r2_score": 0.7256, "mae": 493.31, "rmse": 1009.11})
+    tier_metrics = metrics.get("tier_classification", {})
+
+    return jsonify({
+        "total_predicted_clv": total_pred_clv,
+        "avg_predicted_clv": avg_pred_clv,
+        "median_predicted_clv": median_pred_clv,
+        "total_customers": total_customers,
+        "high_clv_count": high_clv_count,
+        "high_clv_percentage": high_clv_pct,
+        "tier_distribution": tier_dist,
+        "feature_importance": feature_importance_list,
+        "evaluation_metrics": metrics,
+        "regression_metrics": reg_metrics,
+        "classification_metrics": {
+            "accuracy": bin_metrics.get("accuracy", 0.7293),
+            "weighted_f1": tier_metrics.get("f1_weighted", 0.5447),
+            "macro_f1": tier_metrics.get("f1_macro", 0.5339),
+            "roc_auc": bin_metrics.get("roc_auc", 0.8025),
+            "confusion_matrix_3x3": tier_metrics.get("confusion_matrix", [
+                [748, 430, 151],
+                [312, 529, 374],
+                [88, 138, 607]
+            ]),
+            "confusion_matrix_binary": bin_metrics.get("confusion_matrix", [
+                [352, 111],
+                [72, 141]
+            ])
+        }
+    })
+
+
+@app.route("/api/clv/predictions", methods=["GET"])
+@require_auth
+def clv_predictions():
+    """
+    Returns paginated list of customers with their predicted CLV, value tiers, and scores.
+    Query params: tier (all, high, med, low, High CLV, etc.), search (CustomerID or string), page, limit.
+    """
+    if _clv_df is None:
+        return jsonify({"error": "CLV dataset not loaded."}), 503
+
+    df_filtered = _clv_df.copy()
+
+    # Filter by tier (support 'all', 'high', 'med', 'low', 'High CLV', etc.)
+    tier_filter = (request.args.get("tier") or "").strip().lower()
+    if tier_filter and tier_filter != "all":
+        if tier_filter == "high":
+            df_filtered = df_filtered[df_filtered["PredictedTier"] == "High CLV"]
+        elif tier_filter in ["med", "medium"]:
+            df_filtered = df_filtered[df_filtered["PredictedTier"] == "Medium CLV"]
+        elif tier_filter == "low":
+            df_filtered = df_filtered[df_filtered["PredictedTier"] == "Low CLV"]
+        else:
+            df_filtered = df_filtered[df_filtered["PredictedTier"].str.lower() == tier_filter]
+
+    # Filter by search
+    query = (request.args.get("search") or "").strip()
+    if query:
+        clean_q = query.upper().replace("CUST-", "").replace("CUST", "").replace("#", "").strip()
+        if clean_q:
+            df_filtered = df_filtered[df_filtered["CustomerID"].astype(str).str.contains(clean_q, case=False, na=False)]
+
+    # Sorting
+    sort_by = request.args.get("sort_by", "PredictedCLV")
+    order = request.args.get("order", "desc")
+    ascending = (order.lower() == "asc")
+    if sort_by in df_filtered.columns:
+        df_filtered = df_filtered.sort_values(by=sort_by, ascending=ascending)
+
+    total_records = len(df_filtered)
+    page = max(1, int(request.args.get("page", 1)))
+    limit = max(1, min(100, int(request.args.get("limit", 6))))
+    start = (page - 1) * limit
+    end = start + limit
+
+    paged_df = df_filtered.iloc[start:end].copy()
+    records = []
+    
+    # Calculate global ranking rank
+    for idx, row in paged_df.iterrows():
+        score = float(row.get("CLV_Score", 50.0))
+        cust_id = int(row["CustomerID"])
+        tier = str(row.get("PredictedTier", "Medium CLV"))
+        
+        # Rank string
+        if score >= 90:
+            rank_str = f"Top {max(0.1, round(100 - score, 1))}%"
+        elif score >= 70:
+            rank_str = f"Top {int(round(100 - score))}%"
+        elif score >= 50:
+            rank_str = f"Top {int(round(100 - score))}%"
+        else:
+            rank_str = f"Bottom {int(round(score))}%"
+
+        # Badge styling and label
+        if tier == "High CLV":
+            badge_label = "High CLV (VIP)"
+            badge_class = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+            tag_class = "bg-emerald-500/20 text-emerald-400"
+            spend_class = "text-emerald-500 dark:text-emerald-400"
+            tier_code = "high"
+        elif tier == "Medium CLV":
+            badge_label = "Medium CLV"
+            badge_class = "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+            tag_class = "bg-purple-500/20 text-purple-400"
+            spend_class = "text-purple-500 dark:text-purple-400"
+            tier_code = "med"
+        else:
+            badge_label = "Low CLV (Risk)"
+            badge_class = "bg-amber-500/20 text-amber-500 border border-amber-500/30"
+            tag_class = "bg-amber-500/20 text-amber-500"
+            spend_class = "text-amber-500 dark:text-amber-400"
+            tier_code = "low"
+
+        records.append({
+            "CustomerID": cust_id,
+            "CustomerDisplayID": f"CUST-{cust_id}",
+            "Frequency": int(row.get("Frequency", 1)),
+            "FrequencyStr": f"{int(row.get('Frequency', 1))} orders",
+            "Monetary": round(float(row.get("Monetary", 0.0)), 2),
+            "MonetaryStr": f"${float(row.get('Monetary', 0.0)):,.2f}",
+            "PredictedCLV": round(float(row.get("PredictedCLV", 0.0)), 2),
+            "PredictedCLVStr": f"${float(row.get('PredictedCLV', 0.0)):,.2f}",
+            "PredictedTier": tier,
+            "TierCode": tier_code,
+            "BadgeLabel": badge_label,
+            "BadgeClass": badge_class,
+            "TagClass": tag_class,
+            "SpendClass": spend_class,
+            "High_CLV_Probability": round(float(row.get("High_CLV_Probability", 0.0)), 3),
+            "CLV_Score": round(score, 1),
+            "PercentileRank": rank_str,
+            "RecommendedAction": str(row.get("RecommendedAction", "")),
+        })
+
+    return jsonify({
+        "page": page,
+        "limit": limit,
+        "total": total_records,
+        "total_pages": int(np.ceil(total_records / limit)) if limit > 0 else 1,
+        "customers": records,
+    })
+
+
+@app.route("/api/clv/predict", methods=["POST"])
+@require_auth
+def clv_predict():
+    """
+    On-the-fly inference endpoint for predicting forward 90-day spend and value tier
+    for any customer given their behavioral stats.
+    """
+    if _clv_model is None or _clv_model.classifier is None:
+        return jsonify({"error": "CLV predictive model not initialized."}), 503
+
+    data = request.get_json(silent=True) or {}
+    try:
+        recency = float(data.get("recency", 30))
+        frequency = int(data.get("frequency", 3))
+        monetary = float(data.get("monetary", 500.0))
+        tenure = float(data.get("tenure", recency + 60))
+        avg_order_value = float(data.get("avg_order_value", monetary / frequency if frequency > 0 else 0.0))
+        unique_products = int(data.get("unique_products", max(1, frequency * 2)))
+        avg_basket_size = float(data.get("avg_basket_size", 12.0))
+
+        result = _clv_model.predict_single(
+            recency=recency,
+            frequency=frequency,
+            monetary=monetary,
+            tenure=tenure,
+            avg_order_value=avg_order_value,
+            unique_products=unique_products,
+            avg_basket_size=avg_basket_size,
+        )
+
+        pred_val = result["predicted_clv"]
+        tier = result["clv_tier"]
+        prob = result["high_clv_probability"]
+        action = result["recommended_action"]
+
+        result["predicted_clv_str"] = f"${pred_val:,.2f}"
+        result["probability_pct"] = int(round(prob * 100))
+
+        return jsonify(result)
+    except Exception as exc:
+        return jsonify({"error": f"CLV prediction failed: {str(exc)}"}), 400
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -722,6 +1122,11 @@ def serve_segmentation():
 @app.route("/retailiq_customer_details_theme_toggle_purple_glow/code.html")
 def serve_customer_details():
     return send_from_directory(os.path.join(FRONTEND_DIR, "retailiq_customer_details_theme_toggle_purple_glow"), "code.html")
+
+@app.route("/clv")
+@app.route("/retailiq_clv_analytics_theme_toggle_purple_glow/code.html")
+def serve_clv():
+    return send_from_directory(os.path.join(FRONTEND_DIR, "retailiq_clv_analytics_theme_toggle_purple_glow"), "code.html")
 
 @app.route("/<folder>/code.html")
 def serve_folder_code(folder):

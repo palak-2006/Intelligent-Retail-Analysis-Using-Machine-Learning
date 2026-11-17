@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RetailIQ - Customer Lifetime Value (CLV) & Value Tier Intelligence</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            primary: '#6366f1',
+            'primary-glow': '#7c3aed',
+            'silk-bg-light': '#e8eaf0',
+            'silk-surface-light': '#e2e4ea',
+            'silk-bg-dark': '#13131b',
+            'silk-surface-dark': '#1f1f28',
+            'clv-high': '#10b981',
+            'clv-med': '#8b5cf6',
+            'clv-low': '#f59e0b',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Neumorphic Silk Shadows */
+    /* Light Mode */
+    .neu-raised-light {
+      background: #e8eaf0;
+      box-shadow: 8px 8px 18px #d0d2d8, -8px -8px 18px #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    .neu-inset-light {
+      background: #e2e4ea;
+      box-shadow: inset 4px 4px 8px #d0d2d8, inset -4px -4px 8px #ffffff;
+    }
+    .neu-btn-light:hover {
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.35), 6px 6px 14px #d0d2d8, -6px -6px 14px #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Dark Mode (Default) */
+    .dark .neu-raised {
+      background: #1f1f28;
+      box-shadow: 7px 7px 16px rgba(0,0,0,0.55), -6px -6px 16px rgba(255,255,255,0.035);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .dark .neu-inset {
+      background: #181821;
+      box-shadow: inset 4px 4px 9px rgba(0,0,0,0.6), inset -3px -3px 8px rgba(255,255,255,0.03);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    .dark .neu-btn:hover {
+      box-shadow: 0 0 24px rgba(124, 58, 237, 0.45), 7px 7px 18px rgba(0,0,0,0.65), -5px -5px 14px rgba(255,255,255,0.04);
+      transform: translateY(-1px);
+    }
+
+    /* Active nav item */
+    .dark .neu-active-nav {
+      background: #181821;
+      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.7), inset -3px -3px 7px rgba(255,255,255,0.04);
+      color: #818cf8;
+    }
+    .neu-active-nav-light {
+      background: #dcdfe6;
+      box-shadow: inset 4px 4px 8px #cbced6, inset -4px -4px 8px #ffffff;
+      color: #6366f1;
+    }
+
+    /* Smooth transitions */
+    * {
+      transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.25);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(124, 58, 237, 0.5);
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-[#e8eaf0] dark:bg-[#13131b] text-slate-800 dark:text-slate-100 min-h-screen antialiased flex flex-col lg:flex-row selection:bg-purple-600 selection:text-white">
+
+  <!-- ===================================================== -->
+  <!-- [A] SIDEBAR NAVIGATION (FIXED ON DESKTOP) -->
+  <!-- ===================================================== -->
+  <aside class="w-full lg:w-64 bg-[#e8eaf0] dark:bg-[#161620] p-5 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-300/40 dark:border-white/[0.04] shadow-lg shrink-0 z-30">
+    <div class="space-y-7">
+      <!-- Top Branding -->
+      <div class="flex items-center gap-3 px-2 pt-1 cursor-pointer" onclick="window.location.href=getPageUrl('dashboard')">
+        <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-gradient-to-tr from-indigo-600 to-purple-500 shadow-[0_0_18px_rgba(99,102,241,0.5)] text-white">
+          <span class="material-symbols-outlined text-2xl">diamond</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-400">RetailIQ</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">AI</span>
+          </div>
+          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wide">Intelligence Platform</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-2 text-sm font-medium">
+        <!-- 1. Analytics -->
+        <a href="javascript:void(0)" onclick="window.location.href=getPageUrl('dashboard')" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200/50 dark:hover:bg-white/[0.03] cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">insights</span>
+          <span>Analytics</span>
+        </a>
+
+        <!-- 2. Customers -->
+        <a href="javascript:void(0)" onclick="window.location.href=getPageUrl('segmentation')" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200/50 dark:hover:bg-white/[0.03] cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">groups</span>
+          <span>Customers</span>
+        </a>
+
+        <!-- 3. Sales & Forecast -->
+        <a href="javascript:void(0)" onclick="window.location.href=getPageUrl('sales')" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200/50 dark:hover:bg-white/[0.03] cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">monitoring</span>
+          <span>Sales & Forecast</span>
+        </a>
+
+        <!-- 4. CLV Intelligence (ACTIVE PAGE) -->
+        <a href="javascript:void(0)" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold dark:neu-active-nav neu-active-nav-light text-indigo-600 dark:text-indigo-400 relative cursor-pointer">
+          <span class="material-symbols-outlined text-[21px] text-indigo-500">diamond</span>
+          <span class="tracking-tight">CLV Intelligence</span>
+          <span class="ml-auto w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+        </a>
+
+        <!-- 5. Customer 360 -->
+        <a href="javascript:void(0)" onclick="window.location.href=getPageUrl('customer-details')" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200/50 dark:hover:bg-white/[0.03] cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">badge</span>
+          <span>Customer 360°</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="pt-6 border-t border-slate-300/40 dark:border-white/[0.05] space-y-3">
+      <!-- Dark/Light Mode Switcher -->
+      <button id="themeToggleBtn" onclick="toggleTheme()" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl neu-raised-light dark:neu-raised neu-btn text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+        <span class="flex items-center gap-2.5">
+          <span id="themeIcon" class="material-symbols-outlined text-amber-500 dark:text-indigo-400 text-lg">dark_mode</span>
+          <span id="themeLabel">Dark Mode Active</span>
+        </span>
+        <div class="w-9 h-5 rounded-full p-0.5 bg-slate-300 dark:bg-black/60 flex items-center shadow-inner">
+          <div id="toggleBall" class="w-4 h-4 rounded-full bg-indigo-500 shadow-md transform translate-x-4 transition-transform duration-300"></div>
+        </div>
+      </button>
+
+      <!-- Sign Out Button -->
+      <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================================================== -->
+  <!-- MAIN CONTENT AREA -->
+  <!-- ===================================================== -->
+  <main class="flex-1 p-4 md:p-6 lg:p-8 space-y-7 max-w-[1600px] mx-auto w-full overflow-y-auto">
+
+    <!-- [B] TOP HEADER -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+      <div>
+        <div class="flex flex-wrap items-center gap-3">
+          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Customer Lifetime Value (CLV) Engine
+          </h1>
+          <span class="neu-inset-light dark:neu-inset text-[11px] font-bold text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full border border-indigo-500/20 flex items-center gap-1.5 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            ML Predictive Model
+          </span>
+        </div>
+        <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Machine Learning forward 90-day spend forecasting, value tier clustering &amp; strategic next-actions
+        </p>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Model KPI Pill -->
+        <div class="neu-inset-light dark:neu-inset px-3.5 py-2 rounded-2xl text-[11px] font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-500 text-sm">auto_graph</span>
+          <span>Top-Spender Acc: <strong id="hdrAcc" class="text-emerald-500">72.9%</strong> • Weighted F1: <strong id="hdrF1" class="text-indigo-400">0.54</strong> • R²: <strong id="hdrR2" class="text-indigo-400">0.73</strong></span>
+        </div>
+
+        <!-- Administrator Pill -->
+        <div class="neu-raised-light dark:neu-raised px-3.5 py-1.5 rounded-2xl flex items-center gap-2.5 shadow-sm">
+          <div id="userAvatar" class="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+            A
+          </div>
+          <div class="text-left">
+            <p id="userName" class="text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight">Administrator</p>
+            <p id="userRole" class="text-[10px] text-slate-400">Enterprise AI</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- [C] ROW 1: 4 EXECUTIVE KPI CARDS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <!-- Card 1 -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl relative overflow-hidden group hover:border-purple-500/30">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-indigo-500 text-base">payments</span>
+            Total Projected 90d Revenue
+          </span>
+          <span class="text-[11px] font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">+14.2% YoY</span>
+        </div>
+        <div id="kpiTotalRevenue" class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          $2,576,437.07
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-indigo-400">calendar_month</span>
+          Next quarter forecasted gross revenue
+        </p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl relative overflow-hidden group hover:border-purple-500/30">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-indigo-500 text-base">account_balance_wallet</span>
+            Average Customer CLV
+          </span>
+          <span class="text-[11px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">Mean Pred</span>
+        </div>
+        <div id="kpiAvgCLV" class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          $763.50
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-purple-400">trending_up</span>
+          Forward expected value per active buyer
+        </p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl relative overflow-hidden group hover:border-purple-500/30">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-emerald-500 text-base">star</span>
+            High-CLV Cohort (VIPs)
+          </span>
+          <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Top Tier</span>
+        </div>
+        <div id="kpiHighCLV" class="text-2xl lg:text-3xl font-extrabold text-emerald-500 dark:text-emerald-400 tracking-tight">
+          833 VIPs
+        </div>
+        <p id="kpiHighCLVPct" class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-emerald-400">verified</span>
+          24.7% of accounts driving 68% of forward spend
+        </p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl relative overflow-hidden group hover:border-purple-500/30">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-indigo-500 text-base">group</span>
+            Scored Retail Customers
+          </span>
+          <span class="text-[11px] font-semibold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">Active Cohort</span>
+        </div>
+        <div id="kpiTotalCustomers" class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          3,377
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-indigo-400">query_stats</span>
+          Evaluated across temporal holdout window
+        </p>
+      </div>
+    </section>
+
+    <!-- [D] ROW 2: ANALYTICS VISUALIZATIONS (Grid 3 Columns) -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- 1. Donut Chart Card: CLV Value Tier Distribution -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400 text-lg">pie_chart</span>
+              CLV Value Tier Distribution
+            </h3>
+            <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full neu-inset-light dark:neu-inset text-slate-500 dark:text-slate-400">
+              3-Tier Cluster
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-4">Customer volume &amp; 90-day projected revenue split</p>
+        </div>
+
+        <div class="relative w-full h-56 flex items-center justify-center my-auto">
+          <canvas id="tierDonutChart"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span class="text-xs uppercase font-semibold text-slate-400">Total</span>
+            <span id="donutCenterCount" class="text-xl font-extrabold text-slate-900 dark:text-white">3,377</span>
+            <span class="text-[10px] text-emerald-400 font-bold">100% Scored</span>
+          </div>
+        </div>
+
+        <!-- Legend / Breakdown Pills -->
+        <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-300/40 dark:border-white/[0.04] text-center">
+          <div class="neu-inset-light dark:neu-inset p-2 rounded-xl">
+            <div class="text-[10px] font-bold text-emerald-500 flex items-center justify-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> High CLV
+            </div>
+            <div id="donutHighCount" class="text-xs font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">833 (24.7%)</div>
+            <div id="donutHighRev" class="text-[10px] text-slate-400">$1.75M (68%)</div>
+          </div>
+          <div class="neu-inset-light dark:neu-inset p-2 rounded-xl">
+            <div class="text-[10px] font-bold text-purple-400 flex items-center justify-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> Med CLV
+            </div>
+            <div id="donutMedCount" class="text-xs font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">1,215 (36.0%)</div>
+            <div id="donutMedRev" class="text-[10px] text-slate-400">$612K (24%)</div>
+          </div>
+          <div class="neu-inset-light dark:neu-inset p-2 rounded-xl">
+            <div class="text-[10px] font-bold text-amber-500 flex items-center justify-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Low CLV
+            </div>
+            <div id="donutLowCount" class="text-xs font-extrabold text-slate-800 dark:text-slate-200 mt-0.5">1,329 (39.3%)</div>
+            <div id="donutLowRev" class="text-[10px] text-slate-400">$214K (8%)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Horizontal Bar Chart Card: CLV Feature Drivers -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-indigo-400 text-lg">bar_chart</span>
+              CLV Feature Drivers (Gini Importance)
+            </h3>
+            <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full neu-inset-light dark:neu-inset text-slate-500 dark:text-slate-400">
+              Tree Model
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">Key attributes driving forward customer valuation</p>
+        </div>
+
+        <div class="w-full h-56 relative my-auto">
+          <canvas id="featureBarChart"></canvas>
+        </div>
+
+        <div class="pt-3 border-t border-slate-300/40 dark:border-white/[0.04] text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+          <span>Primary driver: <strong id="barTopFeature" class="text-indigo-400">Monetary Spend (27.4%)</strong></span>
+          <span id="barSubFeature" class="text-emerald-400 font-semibold">SKU Diversity +15% impact</span>
+        </div>
+      </div>
+
+      <!-- 3. Model Evaluation Card: Confusion Matrix (3x3) -->
+      <div class="neu-raised-light dark:neu-raised p-5 rounded-2xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400 text-lg">grid_on</span>
+              Model Confusion Matrix (3 × 3)
+            </h3>
+            <span class="text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              Val Holdout
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">Actual vs. Predicted value tier classification</p>
+        </div>
+
+        <!-- 3x3 Grid Matrix -->
+        <div class="neu-inset-light dark:neu-inset p-3 rounded-2xl space-y-2">
+          <!-- Top Row / Actual headers -->
+          <div class="grid grid-cols-4 text-center text-[10px] font-bold text-slate-500 dark:text-slate-400">
+            <span class="text-left pl-1">Actual ↓ / Pred →</span>
+            <span class="text-amber-500">Pred Low</span>
+            <span class="text-purple-400">Pred Med</span>
+            <span class="text-emerald-500">Pred High</span>
+          </div>
+
+          <!-- Row 1: Actual Low -->
+          <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
+            <span class="text-[10px] font-bold text-amber-500 flex items-center pl-1">Act. Low</span>
+            <!-- (0,0) Correct -->
+            <div id="cm00" class="neu-raised-light dark:neu-raised py-2 rounded-xl bg-indigo-600/20 text-indigo-400 font-extrabold border border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.2)]">
+              748 <span class="text-[9px] block text-indigo-300 font-normal">56.3%</span>
+            </div>
+            <!-- (0,1) -->
+            <div id="cm01" class="p-2 rounded-xl bg-slate-200/50 dark:bg-black/20 text-slate-600 dark:text-slate-400">
+              430 <span class="text-[9px] block text-slate-500">32.3%</span>
+            </div>
+            <!-- (0,2) -->
+            <div id="cm02" class="p-2 rounded-xl bg-slate-200/50 dark:bg-black/20 text-slate-600 dark:text-slate-400">
+              151 <span class="text-[9px] block text-slate-500">11.4%</span>
+            </div>
+          </div>
+
+          <!-- Row 2: Actual Med -->
+          <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
+            <span class="text-[10px] font-bold text-purple-400 flex items-center pl-1">Act. Med</span>
+            <!-- (1,0) -->
+            <div id="cm10" class="p-2 rounded-xl bg-slate-200/50 dark:bg-black/20 text-slate-600 dark:text-slate-400">
+              312 <span class="text-[9px] block text-slate-500">25.7%</span>
+            </div>
+            <!-- (1,1) Correct -->
+            <div id="cm11" class="neu-raised-light dark:neu-raised py-2 rounded-xl bg-purple-600/20 text-purple-400 font-extrabold border border-purple-500/30 shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+              529 <span class="text-[9px] block text-purple-300 font-normal">43.5%</span>
+            </div>
+            <!-- (1,2) -->
+            <div id="cm12" class="p-2 rounded-xl bg-slate-200/50 dark:bg-black/20 text-slate-600 dark:text-slate-400">
+              374 <span class="text-[9px] block text-slate-500">30.8%</span>
+            </div>
+          </div>
+
+          <!-- Row 3: Actual High -->
+          <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
+            <span class="text-[10px] font-bold text-emerald-500 flex items-center pl-1">Act. High</span>
+            <!-- (2,0) -->
+            <div id="cm20" class="p-2 rounded-xl bg-slate-200/50 dark:bg-black/20 text-slate-600 dark:text-slate-400">
+              88 <span class="text-[9px] block text-slate-500">10.6%</span>
+            </div>
+            <!-- (2,1) -->
+            <div id="cm21" class="p-2 rounded-xl bg-slate-200/50 dark:bg-black/20 text-slate-600 dark:text-slate-400">
+              138 <span class="text-[9px] block text-slate-500">16.5%</span>
+            </div>
+            <!-- (2,2) Correct -->
+            <div id="cm22" class="neu-raised-light dark:neu-raised py-2 rounded-xl bg-emerald-600/20 text-emerald-400 font-extrabold border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.25)]">
+              607 <span class="text-[9px] block text-emerald-300 font-normal">72.9%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation Metrics Summary Footer -->
+        <div class="pt-3 border-t border-slate-300/40 dark:border-white/[0.04] grid grid-cols-3 text-center text-[10px] text-slate-500 dark:text-slate-400">
+          <div>Accuracy: <strong id="cmAcc" class="text-slate-900 dark:text-slate-200 font-bold block text-xs">55.5%</strong></div>
+          <div>Weighted F1: <strong id="cmF1W" class="text-indigo-400 font-bold block text-xs">0.5447</strong></div>
+          <div>Macro F1: <strong id="cmF1M" class="text-purple-400 font-bold block text-xs">0.5339</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [E] ROW 3: INTERACTIVE CLV SIMULATOR & PREDICTOR -->
+    <section class="neu-raised-light dark:neu-raised p-6 rounded-3xl relative overflow-hidden">
+      <!-- Glow ambient backdrop -->
+      <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/10 blur-3xl pointer-events-none"></div>
+
+      <!-- Section Title -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-slate-300/40 dark:border-white/[0.05] gap-2">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl flex items-center justify-center neu-inset-light dark:neu-inset text-indigo-500">
+            <span class="material-symbols-outlined text-2xl">smart_toy</span>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Real-Time Customer CLV Simulator</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Simulate purchase behavior to forecast 90-day monetary value and recommended retention action.</p>
+          </div>
+        </div>
+        <span class="text-xs font-semibold text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 self-start sm:self-auto">
+          Inference Engine Ready
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+        <!-- Input Form (Left 7 Cols) -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Recency -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-indigo-400">history</span>
+                Recency (Days since last order)
+              </label>
+              <div class="neu-inset-light dark:neu-inset rounded-xl px-3.5 py-2.5 flex items-center">
+                <input id="simRecency" type="number" value="14" min="1" max="365" class="w-full bg-transparent text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none" />
+                <span class="text-xs text-slate-400 font-medium">days</span>
+              </div>
+            </div>
+
+            <!-- Frequency -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-purple-400">repeat</span>
+                Frequency (Total order count)
+              </label>
+              <div class="neu-inset-light dark:neu-inset rounded-xl px-3.5 py-2.5 flex items-center">
+                <input id="simFrequency" type="number" value="8" min="1" max="100" class="w-full bg-transparent text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none" />
+                <span class="text-xs text-slate-400 font-medium">orders</span>
+              </div>
+            </div>
+
+            <!-- Historical Spend -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-emerald-400">attach_money</span>
+                Historical Spend ($ USD)
+              </label>
+              <div class="neu-inset-light dark:neu-inset rounded-xl px-3.5 py-2.5 flex items-center">
+                <span class="text-xs text-slate-400 mr-1 font-bold">$</span>
+                <input id="simSpend" type="number" value="1840.50" step="10" class="w-full bg-transparent text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none" />
+              </div>
+            </div>
+
+            <!-- Tenure -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-amber-400">schedule</span>
+                Tenure (Account age)
+              </label>
+              <div class="neu-inset-light dark:neu-inset rounded-xl px-3.5 py-2.5 flex items-center">
+                <input id="simTenure" type="number" value="180" min="1" max="1500" class="w-full bg-transparent text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none" />
+                <span class="text-xs text-slate-400 font-medium">days</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Predict Action Button -->
+          <div class="pt-2 flex items-center gap-3">
+            <button onclick="runSimulation()" class="neu-raised-light dark:neu-raised neu-btn px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-sm flex items-center gap-2 hover:shadow-[0_0_25px_rgba(124,58,237,0.5)] transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-base">psychology</span>
+              <span>Predict Customer CLV</span>
+            </button>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400">Instant ML model recalculation</span>
+          </div>
+        </div>
+
+        <!-- Result Console (Right 5 Cols) -->
+        <div class="lg:col-span-5 neu-inset-light dark:neu-inset p-5 rounded-2xl flex flex-col justify-between border border-purple-500/20">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-300/30 dark:border-white/[0.05]">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Inference Prediction</span>
+              <span id="resBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> High CLV
+              </span>
+            </div>
+
+            <div class="my-4">
+              <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">Forecasted 90-Day Monetary Value</span>
+              <div id="resSpend" class="text-3xl sm:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400 tracking-tight mt-1">
+                $1,111.60
+              </div>
+              <div class="flex items-center gap-2 mt-2">
+                <div class="w-full bg-slate-300 dark:bg-black/40 h-2 rounded-full overflow-hidden p-0.5">
+                  <div id="resProgressBar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 78%;"></div>
+                </div>
+                <span id="resProb" class="text-xs font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">78% VIP Prob</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Action Strategy Box -->
+          <div class="neu-raised-light dark:neu-raised p-3.5 rounded-xl border-l-4 border-indigo-500">
+            <div class="flex items-center gap-1.5 text-xs font-bold text-indigo-500 dark:text-indigo-400 mb-1">
+              <span class="material-symbols-outlined text-sm">tips_and_updates</span>
+              AI Recommended Action Strategy:
+            </div>
+            <p id="resAction" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              "Assign dedicated VIP concierge, provide exclusive early-access previews for new product drops, and issue priority loyalty perks to protect forward retention."
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- [F] ROW 4: CUSTOMER CLV DIRECTORY TABLE -->
+    <section class="neu-raised-light dark:neu-raised p-6 rounded-3xl space-y-5">
+      <!-- Table Header & Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-indigo-400">view_list</span>
+            Customer CLV Directory
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Forward projected value, behavioral frequency and recommended tiers</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Filter Tabs -->
+          <div class="neu-inset-light dark:neu-inset p-1 rounded-2xl flex items-center text-xs font-semibold">
+            <button id="tab-all" onclick="filterTable('all', this)" class="table-tab px-3 py-1.5 rounded-xl bg-indigo-600 text-white shadow-sm font-bold cursor-pointer">All (3,377)</button>
+            <button id="tab-high" onclick="filterTable('high', this)" class="table-tab px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-indigo-400 cursor-pointer">High CLV</button>
+            <button id="tab-med" onclick="filterTable('med', this)" class="table-tab px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-indigo-400 cursor-pointer">Med CLV</button>
+            <button id="tab-low" onclick="filterTable('low', this)" class="table-tab px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-indigo-400 cursor-pointer">Low CLV</button>
+          </div>
+
+          <!-- Search Inset -->
+          <div class="neu-inset-light dark:neu-inset rounded-2xl px-3 py-1.5 flex items-center gap-2 w-48 sm:w-60">
+            <span class="material-symbols-outlined text-slate-400 text-base">search</span>
+            <input id="tableSearch" type="text" oninput="searchCustomers()" placeholder="Search Customer ID..." class="w-full bg-transparent text-xs font-medium text-slate-800 dark:text-slate-100 focus:outline-none" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsive Table Container -->
+      <div class="overflow-x-auto rounded-2xl neu-inset-light dark:neu-inset p-1">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-slate-300/40 dark:border-white/[0.05] text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <th class="py-3 px-4 font-bold">Customer ID</th>
+              <th class="py-3 px-4 font-bold">Frequency</th>
+              <th class="py-3 px-4 font-bold">Historical Spend</th>
+              <th class="py-3 px-4 font-bold text-indigo-400">Predicted 90d CLV</th>
+              <th class="py-3 px-4 font-bold">Value Tier</th>
+              <th class="py-3 px-4 font-bold">Percentile Rank</th>
+              <th class="py-3 px-4 font-bold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="customerTableBody" class="divide-y divide-slate-300/30 dark:divide-white/[0.03]">
+            <!-- Dynamic rows will load here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination / Footer Info -->
+      <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-3 pt-2">
+        <span id="tableShowingCount">Showing <strong>6</strong> of <strong>3,377</strong> scored customers</span>
+        <div class="flex items-center gap-2">
+          <button id="btnPrevPage" onclick="changePage(-1)" class="neu-raised-light dark:neu-raised px-3 py-1.5 rounded-xl font-bold hover:text-indigo-400 cursor-pointer disabled:opacity-50">Previous</button>
+          <span id="tablePageIndicator" class="px-2 font-bold text-indigo-400">Page 1 of 563</span>
+          <button id="btnNextPage" onclick="changePage(1)" class="neu-raised-light dark:neu-raised px-3 py-1.5 rounded-xl font-bold hover:text-indigo-400 cursor-pointer disabled:opacity-50">Next</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================== -->
+  <!-- SCRIPT LOGIC (ROUTING, API BINDING, CHARTS & SIMULATOR) -->
+  <!-- ===================================================== -->
+  <script>
+    const BASE_URL = window.location.origin.startsWith('http') ? window.location.origin : 'http://localhost:5000';
+
+    function getPageUrl(page) {
+      if (window.location.protocol === 'file:') {
+        const map = {
+          dashboard: '../retailiq_dashboard_theme_toggle_purple_glow/code.html',
+          login: '../retailiq_login_silk_white_bg/code.html',
+          signup: '../retailiq_sign_up_purple_glow_centered/code.html',
+          sales: '../retailiq_sales_analytics_theme_toggle_pie_chart/code.html',
+          segmentation: '../retailiq_customer_segmentation_theme_toggle_purple_glow/code.html',
+          'customer-details': '../retailiq_customer_details_theme_toggle_purple_glow/code.html',
+          clv: '../retailiq_clv_analytics_theme_toggle_purple_glow/code.html'
+        };
+        return map[page] || page;
+      }
+      return '/' + page;
+    }
+
+    function getToken() { return localStorage.getItem('retailiq_token'); }
+    function getUserName() { return localStorage.getItem('retailiq_name') || 'Administrator'; }
+    function getUserEmail() { return localStorage.getItem('retailiq_email') || 'admin@retailiq.com'; }
+    function logout() {
+      localStorage.removeItem('retailiq_token');
+      localStorage.removeItem('retailiq_name');
+      localStorage.removeItem('retailiq_email');
+      window.location.href = getPageUrl('login');
+    }
+
+    async function apiGet(path) {
+      try {
+        const headers = {};
+        const tok = getToken();
+        if (tok) headers['Authorization'] = 'Bearer ' + tok;
+        const res = await fetch(BASE_URL + path, { headers });
+        if (res.status === 401 && window.location.protocol !== 'file:') {
+          logout();
+          return null;
+        }
+        return await res.json();
+      } catch (err) {
+        console.warn('API GET error for ' + path, err);
+        return null;
+      }
+    }
+
+    async function apiPost(path, body) {
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        const tok = getToken();
+        if (tok) headers['Authorization'] = 'Bearer ' + tok;
+        const res = await fetch(BASE_URL + path, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body)
+        });
+        if (res.status === 401 && window.location.protocol !== 'file:') {
+          logout();
+          return null;
+        }
+        return await res.json();
+      } catch (err) {
+        console.warn('API POST error for ' + path, err);
+        return null;
+      }
+    }
+
+    // 1. Theme Toggle Script with persistence
+    function toggleTheme() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      const themeLabel = document.getElementById('themeLabel');
+      const toggleBall = document.getElementById('toggleBall');
+
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('retailiq_theme', isDark ? 'dark' : 'light');
+
+      if (isDark) {
+        themeIcon.innerText = 'dark_mode';
+        themeLabel.innerText = 'Dark Mode Active';
+        toggleBall.classList.remove('translate-x-0');
+        toggleBall.classList.add('translate-x-4');
+        updateChartsForTheme(true);
+      } else {
+        themeIcon.innerText = 'light_mode';
+        themeLabel.innerText = 'Light Mode Active';
+        toggleBall.classList.remove('translate-x-4');
+        toggleBall.classList.add('translate-x-0');
+        updateChartsForTheme(false);
+      }
+    }
+
+    // 2. Chart.js Initializations
+    let donutChartInstance = null;
+    let barChartInstance = null;
+    let cachedOverviewData = null;
+
+    function initCharts(isDark = true) {
+      const textColor = isDark ? '#94a3b8' : '#475569';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+      // Extract Donut values from cached data or defaults
+      let donutData = [833, 1215, 1329];
+      if (cachedOverviewData && cachedOverviewData.tier_distribution) {
+        const dist = cachedOverviewData.tier_distribution;
+        const high = dist.find(t => t.tier === 'High CLV')?.count || 833;
+        const med = dist.find(t => t.tier === 'Medium CLV')?.count || 1215;
+        const low = dist.find(t => t.tier === 'Low CLV')?.count || 1329;
+        donutData = [high, med, low];
+      }
+
+      // Donut Chart
+      const donutCtx = document.getElementById('tierDonutChart').getContext('2d');
+      donutChartInstance = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['High CLV (VIP)', 'Medium CLV', 'Low CLV'],
+          datasets: [{
+            data: donutData,
+            backgroundColor: ['#10b981', '#8b5cf6', '#f59e0b'],
+            borderWidth: 0,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.raw;
+                  const total = donutData.reduce((a, b) => a + b, 0) || 3377;
+                  const pct = ((val / total) * 100).toFixed(1);
+                  return ` ${context.label}: ${val.toLocaleString()} users (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Feature Drivers Bar Chart
+      let barLabels = ['Monetary Spend', 'SKU Diversity', 'AOV ($)', 'Frequency', 'Recency (Days)', 'Basket Size'];
+      let barValues = [27.4, 15.0, 13.9, 13.5, 11.6, 9.7];
+      if (cachedOverviewData && cachedOverviewData.feature_importance && cachedOverviewData.feature_importance.length) {
+        barLabels = cachedOverviewData.feature_importance.map(f => f.feature);
+        barValues = cachedOverviewData.feature_importance.map(f => f.importance);
+      }
+
+      const barCtx = document.getElementById('featureBarChart').getContext('2d');
+      barChartInstance = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: barLabels,
+          datasets: [{
+            label: 'Gini Importance (%)',
+            data: barValues,
+            backgroundColor: [
+              '#6366f1',
+              '#8b5cf6',
+              '#a855f7',
+              '#3b82f6',
+              '#06b6d4',
+              '#10b981',
+              '#f59e0b'
+            ],
+            borderRadius: 8,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (c) => ` Importance: ${c.raw}%`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, callback: (v) => v + '%' },
+              max: Math.max(35, Math.ceil((Math.max(...barValues) + 5) / 5) * 5)
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: textColor, font: { size: 10, weight: '600' } }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChartsForTheme(isDark) {
+      if (donutChartInstance && barChartInstance) {
+        donutChartInstance.destroy();
+        barChartInstance.destroy();
+        initCharts(isDark);
+      }
+    }
+
+    // 3. Interactive CLV Simulator Logic (Uses Real Machine Learning API)
+    async function runSimulation() {
+      const recency = parseFloat(document.getElementById('simRecency').value) || 30;
+      const frequency = parseFloat(document.getElementById('simFrequency').value) || 5;
+      const spend = parseFloat(document.getElementById('simSpend').value) || 500;
+      const tenure = parseFloat(document.getElementById('simTenure').value) || 100;
+
+      const resSpendEl = document.getElementById('resSpend');
+      const resBadgeEl = document.getElementById('resBadge');
+      const resProgressEl = document.getElementById('resProgressBar');
+      const resProbEl = document.getElementById('resProb');
+      const resActionEl = document.getElementById('resAction');
+
+      // Call API
+      const resp = await apiPost('/api/clv/predict', {
+        recency,
+        frequency,
+        monetary: spend,
+        tenure
+      });
+
+      if (resp && resp.predicted_clv !== undefined) {
+        const predictedVal = resp.predicted_clv;
+        const tier = resp.clv_tier;
+        const prob = resp.high_clv_probability || 0.5;
+        const probPct = Math.round(prob * 100);
+
+        resSpendEl.innerText = '$' + predictedVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        resProbEl.innerText = probPct + '% VIP Prob';
+        resProgressEl.style.width = Math.min(100, Math.max(8, probPct)) + '%';
+        resActionEl.innerText = '"' + (resp.recommended_action || 'Maintain active engagement.') + '"';
+
+        if (tier === 'High CLV') {
+          resBadgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
+          resBadgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span> High CLV';
+          resProgressEl.className = 'bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-500';
+        } else if (tier === 'Medium CLV') {
+          resBadgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center gap-1';
+          resBadgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-400"></span> Med CLV';
+          resProgressEl.className = 'bg-gradient-to-r from-indigo-500 to-purple-400 h-full rounded-full transition-all duration-500';
+        } else {
+          resBadgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1';
+          resBadgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> Low CLV (Risk)';
+          resProgressEl.className = 'bg-gradient-to-r from-amber-500 to-rose-400 h-full rounded-full transition-all duration-500';
+        }
+      } else {
+        // Fallback formulation if offline
+        const recencyFactor = Math.max(0.3, (120 - Math.min(recency, 120)) / 100);
+        const frequencyFactor = Math.min(3.5, 0.8 + (frequency * 0.15));
+        const predictedVal = ((spend * 0.42) * recencyFactor * frequencyFactor) + 120;
+
+        resSpendEl.innerText = '$' + predictedVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (predictedVal >= 1000) {
+          resBadgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1';
+          resBadgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span> High CLV';
+          resProgressEl.style.width = '84%';
+          resProgressEl.className = 'bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full transition-all duration-500';
+          resProbEl.innerText = '84% VIP Prob';
+          resActionEl.innerText = '"Assign dedicated VIP concierge, provide exclusive early-access previews for new product drops, and issue priority loyalty perks to protect forward retention."';
+        } else if (predictedVal >= 450) {
+          resBadgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center gap-1';
+          resBadgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-400"></span> Med CLV';
+          resProgressEl.style.width = '55%';
+          resProgressEl.className = 'bg-gradient-to-r from-indigo-500 to-purple-400 h-full rounded-full transition-all duration-500';
+          resProbEl.innerText = '55% Mid-Tier';
+          resActionEl.innerText = '"Trigger automated cross-sell sequences based on previous category affinity, bundle discounts for related items, and encourage membership enrollment."';
+        } else {
+          resBadgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1';
+          resBadgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> Low CLV (Risk)';
+          resProgressEl.style.width = '24%';
+          resProgressEl.className = 'bg-gradient-to-r from-amber-500 to-rose-400 h-full rounded-full transition-all duration-500';
+          resProbEl.innerText = '24% Low Propensity';
+          resActionEl.innerText = '"Deploy win-back re-engagement campaign with time-sensitive discount, personalized survey on friction points, and streamlined checkout incentives."';
+        }
+      }
+    }
+
+    // 4. Customer Directory Filter, Search & Pagination
+    let currentTier = 'all';
+    let currentSearch = '';
+    let currentPage = 1;
+    const pageSize = 6;
+    let totalPages = 1;
+
+    function filterTable(tier, btn) {
+      currentTier = tier;
+      currentPage = 1;
+
+      document.querySelectorAll('.table-tab').forEach(b => {
+        b.className = 'table-tab px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-indigo-400 cursor-pointer';
+      });
+      if (btn) {
+        btn.className = 'table-tab px-3 py-1.5 rounded-xl bg-indigo-600 text-white shadow-sm font-bold cursor-pointer';
+      }
+      loadTableData();
+    }
+
+    let searchTimeout = null;
+    function searchCustomers() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentSearch = document.getElementById('tableSearch').value.trim();
+        currentPage = 1;
+        loadTableData();
+      }, 250);
+    }
+
+    function changePage(delta) {
+      const target = currentPage + delta;
+      if (target >= 1 && target <= totalPages) {
+        currentPage = target;
+        loadTableData();
+      }
+    }
+
+    async function loadTableData() {
+      const tbody = document.getElementById('customerTableBody');
+      tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 font-medium">Loading customer directory...</td></tr>`;
+
+      let url = `/api/clv/predictions?page=${currentPage}&limit=${pageSize}`;
+      if (currentTier !== 'all') url += `&tier=${encodeURIComponent(currentTier)}`;
+      if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
+
+      const data = await apiGet(url);
+      if (!data || !data.customers || data.customers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 font-medium">No matching customers found.</td></tr>`;
+        document.getElementById('tableShowingCount').innerHTML = `Showing <strong>0</strong> of <strong>${(data?.total || 0).toLocaleString()}</strong> scored customers`;
+        return;
+      }
+
+      totalPages = data.total_pages || 1;
+      document.getElementById('tableShowingCount').innerHTML = `Showing <strong>${data.customers.length}</strong> of <strong>${data.total.toLocaleString()}</strong> scored customers`;
+      document.getElementById('tablePageIndicator').innerText = `Page ${data.page} of ${totalPages}`;
+
+      // Enable/Disable pagination buttons
+      const btnPrev = document.getElementById('btnPrevPage');
+      const btnNext = document.getElementById('btnNextPage');
+      btnPrev.disabled = (data.page <= 1);
+      btnNext.disabled = (data.page >= totalPages);
+
+      const startIndex = (data.page - 1) * pageSize;
+      tbody.innerHTML = data.customers.map((c, i) => {
+        const rowNum = startIndex + i + 1;
+        const profileUrl = getPageUrl('customer-details') + '?id=' + c.CustomerID;
+        return `
+          <tr class="hover:bg-slate-200/40 dark:hover:bg-white/[0.02] transition-colors" data-tier="${c.TierCode}" data-id="${c.CustomerDisplayID}">
+            <td class="py-3.5 px-4 font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-7 h-7 rounded-lg ${c.TagClass} flex items-center justify-center font-bold text-[10px]">#${rowNum}</span>
+              ${c.CustomerDisplayID}
+            </td>
+            <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300 font-semibold">${c.FrequencyStr}</td>
+            <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300 font-semibold">${c.MonetaryStr}</td>
+            <td class="py-3.5 px-4 font-extrabold ${c.SpendClass} text-sm">${c.PredictedCLVStr}</td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${c.BadgeClass}">${c.BadgeLabel}</span>
+            </td>
+            <td class="py-3.5 px-4 font-bold text-slate-700 dark:text-slate-300">${c.PercentileRank}</td>
+            <td class="py-3.5 px-4 text-right">
+              <button onclick="window.location.href='${profileUrl}'" class="neu-raised-light dark:neu-raised px-3 py-1 rounded-xl text-[11px] font-bold text-indigo-500 dark:text-indigo-400 hover:text-purple-300 cursor-pointer">Profile →</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 5. Load Overview Metrics & Charts from Backend
+    async function loadOverview() {
+      const data = await apiGet('/api/clv/overview');
+      if (!data) return;
+      cachedOverviewData = data;
+
+      // Top KPI Cards
+      if (data.total_predicted_clv !== undefined) {
+        document.getElementById('kpiTotalRevenue').innerText = '$' + Number(data.total_predicted_clv).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      if (data.avg_predicted_clv !== undefined) {
+        document.getElementById('kpiAvgCLV').innerText = '$' + Number(data.avg_predicted_clv).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      if (data.high_clv_count !== undefined) {
+        document.getElementById('kpiHighCLV').innerText = Number(data.high_clv_count).toLocaleString() + ' VIPs';
+        if (data.high_clv_percentage !== undefined) {
+          document.getElementById('kpiHighCLVPct').innerHTML = `<span class="material-symbols-outlined text-[13px] text-emerald-400">verified</span> ${data.high_clv_percentage}% of accounts driving top future revenue`;
+        }
+      }
+      if (data.total_customers !== undefined) {
+        document.getElementById('kpiTotalCustomers').innerText = Number(data.total_customers).toLocaleString();
+        document.getElementById('donutCenterCount').innerText = Number(data.total_customers).toLocaleString();
+        document.getElementById('tab-all').innerText = `All (${Number(data.total_customers).toLocaleString()})`;
+      }
+
+      // Donut Legend Pills
+      if (data.tier_distribution && data.tier_distribution.length) {
+        const highTier = data.tier_distribution.find(t => t.tier === 'High CLV');
+        const medTier = data.tier_distribution.find(t => t.tier === 'Medium CLV');
+        const lowTier = data.tier_distribution.find(t => t.tier === 'Low CLV');
+
+        if (highTier) {
+          document.getElementById('donutHighCount').innerText = `${highTier.count.toLocaleString()} (${highTier.percentage}%)`;
+          const revM = (highTier.projected_revenue / 1e6).toFixed(2);
+          document.getElementById('donutHighRev').innerText = `$${revM}M (${Math.round((highTier.projected_revenue / (data.total_predicted_clv || 1)) * 100)}%)`;
+        }
+        if (medTier) {
+          document.getElementById('donutMedCount').innerText = `${medTier.count.toLocaleString()} (${medTier.percentage}%)`;
+          const revK = Math.round(medTier.projected_revenue / 1e3);
+          document.getElementById('donutMedRev').innerText = `$${revK}K (${Math.round((medTier.projected_revenue / (data.total_predicted_clv || 1)) * 100)}%)`;
+        }
+        if (lowTier) {
+          document.getElementById('donutLowCount').innerText = `${lowTier.count.toLocaleString()} (${lowTier.percentage}%)`;
+          const revK = Math.round(lowTier.projected_revenue / 1e3);
+          document.getElementById('donutLowRev').innerText = `$${revK}K (${Math.round((lowTier.projected_revenue / (data.total_predicted_clv || 1)) * 100)}%)`;
+        }
+      }
+
+      // Feature Drivers Bar subtitle
+      if (data.feature_importance && data.feature_importance.length) {
+        const f1 = data.feature_importance[0];
+        const f2 = data.feature_importance[1];
+        if (f1) document.getElementById('barTopFeature').innerText = `${f1.feature} (${f1.importance}%)`;
+        if (f2) document.getElementById('barSubFeature').innerText = `${f2.feature} +${f2.importance}% impact`;
+      }
+
+      // Header summary badge
+      if (data.classification_metrics) {
+        const cm = data.classification_metrics;
+        if (cm.accuracy !== undefined) document.getElementById('hdrAcc').innerText = (cm.accuracy * 100).toFixed(1) + '%';
+        if (cm.weighted_f1 !== undefined) document.getElementById('hdrF1').innerText = cm.weighted_f1.toFixed(2);
+        if (data.regression_metrics && data.regression_metrics.r2_score !== undefined) {
+          document.getElementById('hdrR2').innerText = data.regression_metrics.r2_score.toFixed(2);
+        }
+
+        // Confusion matrix values
+        if (cm.confusion_matrix_3x3 && cm.confusion_matrix_3x3.length === 3) {
+          const matrix = cm.confusion_matrix_3x3;
+          const r0Total = (matrix[0][0] + matrix[0][1] + matrix[0][2]) || 1;
+          const r1Total = (matrix[1][0] + matrix[1][1] + matrix[1][2]) || 1;
+          const r2Total = (matrix[2][0] + matrix[2][1] + matrix[2][2]) || 1;
+
+          document.getElementById('cm00').innerHTML = `${matrix[0][0]} <span class="text-[9px] block text-indigo-300 font-normal">${((matrix[0][0]/r0Total)*100).toFixed(1)}%</span>`;
+          document.getElementById('cm01').innerHTML = `${matrix[0][1]} <span class="text-[9px] block text-slate-500">${((matrix[0][1]/r0Total)*100).toFixed(1)}%</span>`;
+          document.getElementById('cm02').innerHTML = `${matrix[0][2]} <span class="text-[9px] block text-slate-500">${((matrix[0][2]/r0Total)*100).toFixed(1)}%</span>`;
+
+          document.getElementById('cm10').innerHTML = `${matrix[1][0]} <span class="text-[9px] block text-slate-500">${((matrix[1][0]/r1Total)*100).toFixed(1)}%</span>`;
+          document.getElementById('cm11').innerHTML = `${matrix[1][1]} <span class="text-[9px] block text-purple-300 font-normal">${((matrix[1][1]/r1Total)*100).toFixed(1)}%</span>`;
+          document.getElementById('cm12').innerHTML = `${matrix[1][2]} <span class="text-[9px] block text-slate-500">${((matrix[1][2]/r1Total)*100).toFixed(1)}%</span>`;
+
+          document.getElementById('cm20').innerHTML = `${matrix[2][0]} <span class="text-[9px] block text-slate-500">${((matrix[2][0]/r2Total)*100).toFixed(1)}%</span>`;
+          document.getElementById('cm21').innerHTML = `${matrix[2][1]} <span class="text-[9px] block text-slate-500">${((matrix[2][1]/r2Total)*100).toFixed(1)}%</span>`;
+          document.getElementById('cm22').innerHTML = `${matrix[2][2]} <span class="text-[9px] block text-emerald-300 font-normal">${((matrix[2][2]/r2Total)*100).toFixed(1)}%</span>`;
+        }
+
+        // CM Footer
+        if (cm.macro_f1 !== undefined) document.getElementById('cmF1M').innerText = cm.macro_f1.toFixed(4);
+        if (cm.weighted_f1 !== undefined) document.getElementById('cmF1W').innerText = cm.weighted_f1.toFixed(4);
+        if (cm.accuracy !== undefined) document.getElementById('cmAcc').innerText = (cm.accuracy * 100).toFixed(1) + '%';
+      }
+
+      // Re-render charts with fresh data
+      const isDark = document.documentElement.classList.contains('dark');
+      updateChartsForTheme(isDark);
+    }
+
+    // On Load Initialization
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Check auth if running through web server
+      if (window.location.protocol !== 'file:' && !getToken()) {
+        window.location.href = getPageUrl('login');
+        return;
+      }
+
+      // Display user info
+      const uName = getUserName();
+      document.getElementById('userName').innerText = uName;
+      document.getElementById('userAvatar').innerText = uName.charAt(0).toUpperCase();
+
+      // Theme preference
+      const savedTheme = localStorage.getItem('retailiq_theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeIcon').innerText = 'light_mode';
+        document.getElementById('themeLabel').innerText = 'Light Mode Active';
+        document.getElementById('toggleBall').classList.remove('translate-x-4');
+        document.getElementById('toggleBall').classList.add('translate-x-0');
+      }
+
+      // Initialize initial charts
+      const isDark = document.documentElement.classList.contains('dark');
+      initCharts(isDark);
+
+      // Load data from backend
+      await loadOverview();
+      await loadTableData();
+    });
+  </script>
+</body>
+</html>

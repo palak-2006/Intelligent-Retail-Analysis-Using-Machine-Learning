@@ -28,3 +28,5 @@ data/online_retail_clean.csv
 *.sqlite
 *.sqlite3
 data/*.db
+data/users.db
+*.bak
