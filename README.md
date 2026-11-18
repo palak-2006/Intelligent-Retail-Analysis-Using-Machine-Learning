@@ -43,6 +43,19 @@ An end-to-end, production-ready retail analytics platform powered by Machine Lea
 - **Market Basket Cross-Sell Recommender**: Powered by FP-Growth association rules to recommend the next best product based on past purchases.
 - **Invoice Audit**: Detailed table of historical invoices and purchased items.
 
+### 7. 🛡️ Enterprise Risk Analysis & Vulnerability Matrix
+- **Multidimensional Risk Evaluation**: Rigorous empirical assessment covering 8 strategic retail risk dimensions:
+  - **Regional Risk (Critical)**: Geographic over-concentration in the United Kingdom (**83.90% of global sales, $7.38M** across 37 active markets).
+  - **Customer Risk (High)**: Whale dependency (**Top 10 accounts command 16.50% / $1.45M** and Top 1% command **28.58% / $2.51M**) and customer dormancy (**1,002 at-risk accounts** with **$504.4k** historical spend at risk).
+  - **Demand & Seasonality Risk (High)**: Monthly sales coefficient of variation of **28.7%** with an extreme **+107.4% Q4 holiday demand surge** ($493k Jan-Feb trough vs $1.16M peak).
+  - **Inventory Risk (Medium)**: Long-tail dead stock drag with **998 SKUs (22.46% of catalog)** generating <$100 annual revenue.
+  - **Product Risk (High)**: Extreme Pareto concentration where **22.3% of SKUs (991 items)** generate **80%** of total revenue, creating high stockout sensitivity.
+  - **Sales Risk (Medium)**: One-time buyer acquisition leakage (**32.91% of customers** never place a repeat order).
+  - **Operational Risk (Medium)**: Order volume surges of 2.1x in peak months across 37 export nations.
+- **Interactive Risk Assessment Matrix**: Clickable 8-risk probability vs impact matrix grid with pop-up containment protocols.
+- **Dynamic Visualizations**: 8-dimension vulnerability radar chart, seasonal demand volatility envelope (±1 Std Dev bands), and regional revenue bar chart.
+- **Mitigation Roadmap**: Phased action plan (Immediate 0-30d, Medium-Term 30-90d, Long-Term 90-180d) and academic dataset measurement boundary disclosure.
+
 ---
 
 ## 🧠 Customer Lifetime Value (CLV) Theory & Mathematical Formulations
@@ -107,7 +120,9 @@ This will:
    - `/dashboard` &rarr; Executive KPI Dashboard
    - `/sales` &rarr; Sales Analytics & Forecasting
    - `/segmentation` &rarr; Customer RFM Segmentation & Directory
-   - `/customer-details?id=17850` &rarr; Customer 360° Profile Deep-Dive (including ML CLV)
+   - `/customer-details?id=14911` &rarr; Customer 360° Profile Deep-Dive (including ML CLV)
+   - `/clv` &rarr; Customer Lifetime Value (CLV) Engine & Value Tier Intelligence
+   - `/risk` &rarr; Enterprise Risk Intelligence Engine & Vulnerability Matrix
 
 2. **Standalone Frontend Mode (`file://`)**:
    Open any `.html` file inside the `frontend/` directory directly in your browser. All frontend scripts automatically detect `file://` mode and route API calls to `http://localhost:5000` while preserving relative file navigation.
@@ -135,6 +150,12 @@ This will:
 | `GET` | `/api/clv/overview` | CLV executive totals, tier breakdown, accuracy, F1, & confusion matrix | Yes (Bearer) |
 | `GET` | `/api/clv/predictions` | Paginated customer CLV predictions with tier filters | Yes (Bearer) |
 | `POST` | `/api/clv/predict` | Real-time ML prediction for continuous spend & CLV tier | Yes (Bearer) |
+| `GET` | `/api/risk/overview` | Executive risk scores, overall vulnerability index, & summary metrics | Yes (Bearer) |
+| `GET` | `/api/risk/matrix` | Full 8-dimension Risk Assessment Matrix with likelihood & mitigations | Yes (Bearer) |
+| `GET` | `/api/risk/regional` | Geographic concentration analysis (UK vs 36 international corridors) | Yes (Bearer) |
+| `GET` | `/api/risk/demand` | Monthly demand volatility series with ±1 Std Dev risk bands | Yes (Bearer) |
+| `GET` | `/api/risk/products` | High-velocity stockout risk SKUs vs slow-moving dead-stock tail | Yes (Bearer) |
+| `GET` | `/api/risk/all` | Complete consolidated risk intelligence payload for dashboard hydration | Yes (Bearer) |
 | `GET` | `/api/recommendations/products` | All candidate products for market basket recommendation | Yes (Bearer) |
 | `POST` | `/api/recommendations/recommend` | Next-best product recommendation via Market Basket rules | Yes (Bearer) |
 | `GET` | `/api/health` | Service health status and readiness checks | No |
@@ -168,19 +189,23 @@ This will:
 │   ├── 04_market_basket_analysis.ipynb
 │   ├── 05_sales_prediction.ipynb
 │   ├── 06_churn_prediction.ipynb
-│   └── 07_clv_prediction.ipynb  # Comprehensive CLV prediction & tier classification
-├── src/                     # Modular backend algorithms
-│   ├── preprocessing.py     # Data cleaning and feature engineering
-│   ├── segmentation.py      # RFM modeling and K-Means clustering
-│   ├── forecasting.py       # Time-series trend and forecasting
-│   ├── clv.py               # Customer Lifetime Value models, metrics & inference
-│   └── recommendation.py    # FP-Growth Market Basket association rules
-└── frontend/                # Interactive UI prototypes
+│   ├── 07_clv_prediction.ipynb        # Comprehensive CLV prediction & tier classification
+│   └── 08_risk_analysis.ipynb         # Empirical Enterprise Risk Analysis & Assessment
+├── src/                               # Modular backend algorithms
+│   ├── preprocessing.py               # Data cleaning and feature engineering
+│   ├── segmentation.py                # RFM modeling and K-Means clustering
+│   ├── forecasting.py                 # Time-series trend and forecasting
+│   ├── clv.py                         # Customer Lifetime Value models, metrics & inference
+│   ├── risk.py                        # Multi-dimensional Enterprise Risk Analysis Engine
+│   └── recommendation.py              # FP-Growth Market Basket association rules
+└── frontend/                          # Interactive UI prototypes
     ├── retailiq_login_silk_white_bg/
     ├── retailiq_sign_up_purple_glow_centered/
     ├── retailiq_dashboard_theme_toggle_purple_glow/
     ├── retailiq_sales_analytics_theme_toggle_pie_chart/
     ├── retailiq_customer_segmentation_theme_toggle_purple_glow/
+    ├── retailiq_clv_analytics_theme_toggle_purple_glow/
+    ├── retailiq_risk_analytics_theme_toggle_purple_glow/
     └── retailiq_customer_details_theme_toggle_purple_glow/
 ```
 
