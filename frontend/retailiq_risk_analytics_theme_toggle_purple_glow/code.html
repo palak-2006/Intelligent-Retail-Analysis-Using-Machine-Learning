@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>RetailIQ - Enterprise Risk Analysis &amp; Vulnerability Matrix</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Chart.js -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #e8eaf0;
+      --shadow-light: #ffffff;
+      --shadow-dark: #d1d3d8;
+      --purple-glow: rgba(124, 58, 237, 0.25);
+      --text-main: #2e3040;
+      --text-muted: #6c6e7e;
+      --card-border: rgba(255, 255, 255, 0.7);
+    }
+
+    .dark {
+      --bg-base: #1e1e24;
+      --shadow-light: #2a2a35;
+      --shadow-dark: #121215;
+      --purple-glow: rgba(167, 139, 250, 0.25);
+      --text-main: #f0f2f8;
+      --text-muted: #9a9cb0;
+      --card-border: rgba(255, 255, 255, 0.06);
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .neo-card {
+      background: var(--bg-base);
+      box-shadow: 8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+      border-radius: 1rem;
+      border: 1px solid var(--card-border);
+      transition: all 0.3s ease;
+    }
+    .neo-card:hover {
+      box-shadow: 10px 10px 22px var(--shadow-dark), -10px -10px 22px var(--shadow-light);
+    }
+
+    .neo-inset {
+      background: var(--bg-base);
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      border-radius: 0.75rem;
+      transition: all 0.25s ease;
+    }
+
+    .neo-button {
+      background: var(--bg-base);
+      box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+      border: none;
+      transition: all 0.25s ease;
+      border-radius: 0.75rem;
+    }
+    .neo-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+    }
+    .neo-button:active {
+      transform: translateY(0);
+      box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+    }
+
+    .neo-button-primary {
+      background: #6366f1;
+      box-shadow: 5px 5px 12px var(--shadow-dark), -5px -5px 12px var(--shadow-light);
+      color: #fff;
+      border: none;
+      transition: all 0.25s ease;
+      border-radius: 0.75rem;
+    }
+    .neo-button-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 7px 7px 16px var(--shadow-dark), -7px -7px 16px var(--shadow-light), 0 0 16px rgba(99, 102, 241, 0.45);
+    }
+
+    .hover-neo-purple:hover {
+      transform: translateY(-2px);
+      box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light), 0 0 20px var(--purple-glow) !important;
+    }
+
+    /* Severity badges */
+    .badge-critical { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-high { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-medium { background: rgba(99, 102, 241, 0.15); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .badge-low { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: #8a8c9a; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+  </style>
+
+  <script>
+    const BASE_URL = window.location.origin.startsWith('http') ? window.location.origin : 'http://localhost:5000';
+
+    function getPageUrl(page) {
+      if (window.location.protocol === 'file:') {
+        const map = {
+          dashboard: '../retailiq_dashboard_theme_toggle_purple_glow/code.html',
+          login: '../retailiq_login_silk_white_bg/code.html',
+          signup: '../retailiq_sign_up_purple_glow_centered/code.html',
+          sales: '../retailiq_sales_analytics_theme_toggle_pie_chart/code.html',
+          segmentation: '../retailiq_customer_segmentation_theme_toggle_purple_glow/code.html',
+          'customer-details': '../retailiq_customer_details_theme_toggle_purple_glow/code.html',
+          clv: '../retailiq_clv_analytics_theme_toggle_purple_glow/code.html',
+          risk: '../retailiq_risk_analytics_theme_toggle_purple_glow/code.html'
+        };
+        return map[page] || page;
+      }
+      return '/' + page;
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('retailiq_theme', isDark ? 'dark' : 'light');
+      updateChartsTheme(isDark);
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem('retailiq_theme');
+      if (saved === 'dark') document.documentElement.classList.add('dark');
+      else if (saved === 'light') document.documentElement.classList.remove('dark');
+    }
+    initTheme();
+
+    function getToken() { return localStorage.getItem('retailiq_token'); }
+    function getUserName() { return localStorage.getItem('retailiq_name') || 'Administrator'; }
+    function logout() {
+      localStorage.removeItem('retailiq_token');
+      localStorage.removeItem('retailiq_name');
+      localStorage.removeItem('retailiq_email');
+      window.location.href = getPageUrl('login');
+    }
+
+    async function apiGet(path) {
+      try {
+        const headers = {};
+        const tok = getToken();
+        if (tok) headers['Authorization'] = 'Bearer ' + tok;
+        const res = await fetch(BASE_URL + path, { headers });
+        if (res.status === 401 && window.location.protocol !== 'file:') {
+          logout();
+          return null;
+        }
+        return await res.json();
+      } catch (err) {
+        console.warn('API GET error for ' + path, err);
+        return null;
+      }
+    }
+
+    // Chart instances
+    let radarChartInstance = null;
+    let demandChartInstance = null;
+    let regionalChartInstance = null;
+    let cachedRiskData = null;
+
+    function getLevelClass(level) {
+      switch ((level || '').toLowerCase()) {
+        case 'critical': return 'badge-critical';
+        case 'high': return 'badge-high';
+        case 'medium': return 'badge-medium';
+        case 'low': return 'badge-low';
+        default: return 'badge-medium';
+      }
+    }
+
+    function renderRiskCards(summary) {
+      if (!summary) return;
+      document.getElementById('kpiOverallScore').textContent = `${summary.overall_risk_score}/100`;
+      document.getElementById('kpiUkShare').textContent = `${summary.uk_revenue_share}%`;
+      document.getElementById('kpiUkSales').textContent = `$${(summary.uk_revenue || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+      document.getElementById('kpiAtRiskRev').textContent = `$${(summary.at_risk_revenue || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+      document.getElementById('kpiAtRiskCount').textContent = `${summary.at_risk_customers_count} accounts (${summary.at_risk_revenue_share}% rev)`;
+      document.getElementById('kpiDemandCv').textContent = `${summary.monthly_demand_cv}% CV`;
+      document.getElementById('kpiDemandSwing').textContent = `+${summary.seasonal_demand_swing}% Q4 Holiday Swing`;
+      document.getElementById('kpiDeadStockCount').textContent = `${summary.dead_stock_sku_count} SKUs`;
+      document.getElementById('kpiDeadStockPct').textContent = `${summary.dead_stock_sku_pct}% of total catalog (<$100 sales)`;
+    }
+
+    function renderInteractiveMatrix(matrix) {
+      const container = document.getElementById('matrixGridContainer');
+      if (!container || !matrix) return;
+
+      // Group matrix items by Probability & Impact
+      // Prob: High (3), Medium (2), Low (1)
+      // Impact: Low (1), Medium (2), High (3), Critical (4)
+      container.innerHTML = matrix.map(r => {
+        const lvlClass = getLevelClass(r.risk_level);
+        return `
+          <div class="neo-card p-4 flex flex-col justify-between hover-neo-purple transition-all cursor-pointer group" onclick="showRiskDetail('${r.id}')">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-[11px] font-bold tracking-wider px-2 py-0.5 rounded-full ${lvlClass}">${r.risk_level}</span>
+                <span class="text-[11px] text-[#8a8c9a] font-mono">${r.category}</span>
+              </div>
+              <h4 class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors mb-1.5">${r.identified_risk}</h4>
+              <p class="text-xs text-[#8a8c9a] line-clamp-2 mb-3">${r.metric}</p>
+            </div>
+            <div class="border-t pt-2.5 flex items-center justify-between text-xs" style="border-color: rgba(139,142,154,0.15);">
+              <span class="text-[11px] font-medium text-[#8a8c9a]">Prob: <strong class="text-on-surface">${r.probability}</strong> • Imp: <strong class="text-on-surface">${r.impact}</strong></span>
+              <span class="text-primary text-[11px] font-semibold flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+                Mitigation <span class="material-symbols-outlined text-xs">arrow_forward</span>
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMatrixTable(matrix, filterCategory = 'ALL') {
+      const tbody = document.getElementById('riskTableTbody');
+      if (!tbody || !matrix) return;
+
+      const filtered = filterCategory === 'ALL' 
+        ? matrix 
+        : matrix.filter(r => r.category.toLowerCase().includes(filterCategory.toLowerCase()));
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="border-b transition-colors hover:bg-black/5 dark:hover:bg-white/5" style="border-color: rgba(139,142,154,0.15);">
+          <td class="py-3 px-4 font-mono text-xs font-bold text-primary">${r.id}</td>
+          <td class="py-3 px-4 text-xs font-semibold text-on-surface whitespace-nowrap">${r.category}</td>
+          <td class="py-3 px-4 text-xs text-on-surface">
+            <div class="font-bold mb-0.5">${r.identified_risk}</div>
+            <div class="text-[11px] text-[#8a8c9a]">${r.metric}</div>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${r.probability === 'High' ? 'badge-high' : 'badge-medium'}">${r.probability}</span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${r.impact === 'Critical' ? 'badge-critical' : (r.impact === 'High' ? 'badge-high' : 'badge-medium')}">${r.impact}</span>
+          </td>
+          <td class="py-3 px-4 text-center">
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${getLevelClass(r.risk_level)}">${r.risk_level}</span>
+          </td>
+          <td class="py-3 px-4 text-xs text-on-surface-variant max-w-xs leading-relaxed">
+            ${r.mitigation_strategy}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderProductRisks(prodData) {
+      const highVelTbody = document.getElementById('highVelocityTbody');
+      const deadStockTbody = document.getElementById('deadStockTbody');
+
+      if (highVelTbody && prodData.high_velocity) {
+        highVelTbody.innerHTML = prodData.high_velocity.map((p, idx) => `
+          <tr class="border-b text-xs" style="border-color: rgba(139,142,154,0.15);">
+            <td class="py-2.5 px-3 font-semibold text-primary">#${idx+1}</td>
+            <td class="py-2.5 px-3 truncate max-w-[200px]" title="${p.product}">${p.product}</td>
+            <td class="py-2.5 px-3 text-right font-medium">$${p.sales.toLocaleString()}</td>
+            <td class="py-2.5 px-3 text-right text-[#8a8c9a]">${p.quantity.toLocaleString()} units</td>
+            <td class="py-2.5 px-3 text-center"><span class="badge-high px-2 py-0.5 rounded-full text-[10px] font-bold">Stockout Risk</span></td>
+          </tr>
+        `).join('');
+      }
+
+      if (deadStockTbody && prodData.dead_stock) {
+        deadStockTbody.innerHTML = prodData.dead_stock.map((p, idx) => `
+          <tr class="border-b text-xs" style="border-color: rgba(139,142,154,0.15);">
+            <td class="py-2.5 px-3 font-semibold text-[#8a8c9a]">#${idx+1}</td>
+            <td class="py-2.5 px-3 truncate max-w-[200px]" title="${p.product}">${p.product}</td>
+            <td class="py-2.5 px-3 text-right font-medium">$${p.sales.toFixed(2)}</td>
+            <td class="py-2.5 px-3 text-right text-[#8a8c9a]">${p.quantity} units</td>
+            <td class="py-2.5 px-3 text-center"><span class="badge-medium px-2 py-0.5 rounded-full text-[10px] font-bold">Dead Stock</span></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function renderRoadmap(roadmap) {
+      const container = document.getElementById('roadmapContainer');
+      if (!container || !roadmap) return;
+
+      container.innerHTML = roadmap.map(phase => `
+        <div class="neo-card p-5 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-primary px-3 py-1 neo-inset rounded-full">${phase.phase}</span>
+            <span class="text-xs font-semibold text-[#8a8c9a]">${phase.title}</span>
+          </div>
+          <ul class="space-y-2 mt-2">
+            ${phase.actions.map(act => `
+              <li class="text-xs flex items-start gap-2 text-on-surface leading-relaxed">
+                <span class="material-symbols-outlined text-primary text-sm mt-0.5 shrink-0">check_circle</span>
+                <span>${act}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function renderLimitations(limitations) {
+      const container = document.getElementById('limitationsList');
+      if (!container || !limitations) return;
+
+      container.innerHTML = limitations.items.map(item => `
+        <div class="neo-inset p-3.5 rounded-xl">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined text-amber-500 text-sm">info</span>
+            <h5 class="text-xs font-bold text-on-surface">${item.area}</h5>
+          </div>
+          <p class="text-[11px] text-[#8a8c9a] leading-relaxed">${item.detail}</p>
+        </div>
+      `).join('');
+    }
+
+    function initCharts(isDark = false) {
+      if (!cachedRiskData) return;
+      const textColor = isDark ? '#f0f2f8' : '#2e3040';
+      const mutedColor = isDark ? '#9a9cb0' : '#8a8c9a';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+      // 1. Radar Chart: Risk Category Scores
+      const radarEl = document.getElementById('riskCategoryRadarChart');
+      if (radarEl) {
+        if (radarChartInstance) radarChartInstance.destroy();
+        const cats = cachedRiskData.category_scores || [];
+        radarChartInstance = new Chart(radarEl.getContext('2d'), {
+          type: 'radar',
+          data: {
+            labels: cats.map(c => c.category),
+            datasets: [{
+              label: 'Vulnerability Index (0-100)',
+              data: cats.map(c => c.score),
+              backgroundColor: 'rgba(99, 102, 241, 0.25)',
+              borderColor: '#6366f1',
+              pointBackgroundColor: '#7c3aed',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: '#7c3aed',
+              borderWidth: 2,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: gridColor },
+                grid: { color: gridColor },
+                pointLabels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' } },
+                ticks: { color: mutedColor, backdropColor: 'transparent', stepSize: 20, min: 0, max: 100 }
+              }
+            },
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      }
+
+      // 2. Demand Volatility Multi-band Line Chart
+      const demandEl = document.getElementById('demandVolatilityChart');
+      if (demandEl && cachedRiskData.demand_volatility) {
+        if (demandChartInstance) demandChartInstance.destroy();
+        const dData = cachedRiskData.demand_volatility;
+        demandChartInstance = new Chart(demandEl.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: dData.map(d => d.period),
+            datasets: [
+              {
+                label: 'Actual Monthly Sales ($)',
+                data: dData.map(d => d.sales),
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                borderWidth: 3,
+                tension: 0.3,
+                fill: true,
+                pointRadius: 4,
+                pointBackgroundColor: '#6366f1'
+              },
+              {
+                label: 'Mean Monthly Sales ($)',
+                data: dData.map(d => d.mean),
+                borderColor: '#8a8c9a',
+                borderDash: [5, 5],
+                borderWidth: 1.5,
+                fill: false,
+                pointRadius: 0
+              },
+              {
+                label: 'Upper Volatility Band (+1 Std)',
+                data: dData.map(d => d.upper_band),
+                borderColor: 'rgba(239, 68, 68, 0.6)',
+                borderDash: [3, 3],
+                borderWidth: 1.5,
+                fill: false,
+                pointRadius: 0
+              },
+              {
+                label: 'Lower Volatility Band (-1 Std)',
+                data: dData.map(d => d.lower_band),
+                borderColor: 'rgba(245, 158, 11, 0.6)',
+                borderDash: [3, 3],
+                borderWidth: 1.5,
+                fill: false,
+                pointRadius: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { color: gridColor }, ticks: { color: mutedColor, font: { family: 'Plus Jakarta Sans', size: 10 } } },
+              y: { 
+                grid: { color: gridColor }, 
+                ticks: { 
+                  color: mutedColor, 
+                  font: { family: 'Plus Jakarta Sans', size: 10 },
+                  callback: v => '$' + (v / 1000).toFixed(0) + 'k'
+                } 
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 }
+              }
+            }
+          }
+        });
+      }
+
+      // 3. Regional Concentration Bar Chart
+      const regEl = document.getElementById('regionalRiskChart');
+      if (regEl && cachedRiskData.regional_risk) {
+        if (regionalChartInstance) regionalChartInstance.destroy();
+        const rData = cachedRiskData.regional_risk.slice(0, 8);
+        regionalChartInstance = new Chart(regEl.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: rData.map(r => r.country),
+            datasets: [{
+              label: 'Share of Global Revenue (%)',
+              data: rData.map(r => r.share_pct),
+              backgroundColor: rData.map(r => r.country === 'United Kingdom' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(99, 102, 241, 0.7)'),
+              borderRadius: 6,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+              x: { 
+                grid: { color: gridColor }, 
+                ticks: { color: mutedColor, callback: v => v + '%' } 
+              },
+              y: { 
+                grid: { display: false }, 
+                ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' } } 
+              }
+            },
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      }
+    }
+
+    function updateChartsTheme(isDark) {
+      initCharts(isDark);
+    }
+
+    function showRiskDetail(riskId) {
+      if (!cachedRiskData || !cachedRiskData.risk_matrix) return;
+      const risk = cachedRiskData.risk_matrix.find(r => r.id === riskId);
+      if (!risk) return;
+
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBadge = document.getElementById('modalBadge');
+      const modalCategory = document.getElementById('modalCategory');
+      const modalMetric = document.getElementById('modalMetric');
+      const modalMitigation = document.getElementById('modalMitigation');
+      const modal = document.getElementById('riskModal');
+
+      if (modalTitle) modalTitle.textContent = `${risk.id}: ${risk.identified_risk}`;
+      if (modalBadge) {
+        modalBadge.className = `px-3 py-1 rounded-full text-xs font-bold ${getLevelClass(risk.risk_level)}`;
+        modalBadge.textContent = `${risk.risk_level} Risk`;
+      }
+      if (modalCategory) modalCategory.textContent = `${risk.category} • Probability: ${risk.probability} • Impact: ${risk.impact}`;
+      if (modalMetric) modalMetric.textContent = risk.metric;
+      if (modalMitigation) modalMitigation.textContent = risk.mitigation_strategy;
+
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('riskModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function filterTable(cat) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('neo-button-primary');
+        btn.classList.add('neo-button');
+      });
+      const activeBtn = document.getElementById('filter-' + cat.toLowerCase());
+      if (activeBtn) {
+        activeBtn.classList.remove('neo-button');
+        activeBtn.classList.add('neo-button-primary');
+      }
+      if (cachedRiskData) {
+        renderMatrixTable(cachedRiskData.risk_matrix, cat);
+      }
+    }
+
+    async function loadRiskAnalytics() {
+      if (!getToken()) {
+        window.location.href = getPageUrl('login');
+        return;
+      }
+      document.getElementById('userName').textContent = getUserName();
+
+      const data = await apiGet('/api/risk/all');
+      if (!data || !data.summary) {
+        console.error('Failed to load risk analytics');
+        return;
+      }
+
+      cachedRiskData = data;
+      renderRiskCards(data.summary);
+      renderInteractiveMatrix(data.risk_matrix);
+      renderMatrixTable(data.risk_matrix);
+      renderProductRisks(data.product_risk);
+      renderRoadmap(data.roadmap);
+      renderLimitations(data.limitations);
+
+      const isDark = document.documentElement.classList.contains('dark');
+      initCharts(isDark);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadRiskAnalytics();
+    });
+  </script>
+</head>
+
+<body class="min-h-screen flex antialiased">
+
+<!-- ========================================== -->
+<!-- SIDEBAR NAVIGATION -->
+<!-- ========================================== -->
+<nav class="h-screen w-64 fixed left-0 top-0 border-r flex flex-col py-6 px-4 z-50 transition-colors duration-300" style="background-color:var(--bg-base); border-color:rgba(139,142,154,0.2);">
+  <div class="mb-8 px-2 flex items-center gap-3 cursor-pointer" onclick="window.location.href=getPageUrl('dashboard')">
+    <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-[#6366f1] text-white shadow-md">
+      <span class="material-symbols-outlined text-2xl">diamond</span>
+    </div>
+    <div>
+      <h1 class="text-xl font-bold text-[#6366f1]">RetailIQ</h1>
+      <p class="text-[10px] tracking-widest uppercase font-semibold text-[#8a8c9a]">Risk Intelligence</p>
+    </div>
+  </div>
+
+  <div class="flex-1 space-y-2">
+    <!-- Analytics -->
+    <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors cursor-pointer text-[#8a8c9a] hover:text-[#6366f1]" onclick="window.location.href=getPageUrl('dashboard')">
+      <span class="material-symbols-outlined text-xl">monitoring</span>
+      <span class="text-xs font-semibold uppercase tracking-wider">Analytics</span>
+    </a>
+    <!-- Customers -->
+    <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors cursor-pointer text-[#8a8c9a] hover:text-[#6366f1]" onclick="window.location.href=getPageUrl('segmentation')">
+      <span class="material-symbols-outlined text-xl">group</span>
+      <span class="text-xs font-semibold uppercase tracking-wider">Customers</span>
+    </a>
+    <!-- Sales & Forecast -->
+    <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors cursor-pointer text-[#8a8c9a] hover:text-[#6366f1]" onclick="window.location.href=getPageUrl('sales')">
+      <span class="material-symbols-outlined text-xl">query_stats</span>
+      <span class="text-xs font-semibold uppercase tracking-wider">Sales &amp; Forecast</span>
+    </a>
+    <!-- CLV Intelligence -->
+    <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors cursor-pointer text-[#8a8c9a] hover:text-[#6366f1]" onclick="window.location.href=getPageUrl('clv')">
+      <span class="material-symbols-outlined text-xl">diamond</span>
+      <span class="text-xs font-semibold uppercase tracking-wider">CLV Intelligence</span>
+    </a>
+    <!-- Risk Analysis (ACTIVE) -->
+    <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors cursor-pointer text-[#6366f1] neo-inset font-bold" onclick="window.location.href=getPageUrl('risk')">
+      <span class="material-symbols-outlined text-xl text-[#6366f1]" style="font-variation-settings: 'FILL' 1;">shield</span>
+      <span class="text-xs uppercase tracking-wider">Risk Analysis</span>
+      <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+    </a>
+    <!-- Customer Profile -->
+    <a class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-colors cursor-pointer text-[#8a8c9a] hover:text-[#6366f1]" onclick="window.location.href=getPageUrl('customer-details')">
+      <span class="material-symbols-outlined text-xl">badge</span>
+      <span class="text-xs font-semibold uppercase tracking-wider">Customer Profile</span>
+    </a>
+  </div>
+
+  <div class="mt-auto pt-4 space-y-2">
+    <button onclick="alert('Enterprise Risk Alerting Pipeline Active.')" class="w-full py-2.5 px-4 neo-button-primary text-xs uppercase font-bold tracking-wider flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-sm">security</span> Audit Mode
+    </button>
+    <button onclick="logout()" class="w-full py-2 px-4 neo-button hover-neo-purple text-xs flex items-center justify-center gap-2 text-rose-500 font-semibold">
+      <span class="material-symbols-outlined text-sm">logout</span> Logout
+    </button>
+  </div>
+</nav>
+
+<!-- ========================================== -->
+<!-- TOP HEADER -->
+<!-- ========================================== -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 backdrop-blur-xl flex justify-between items-center px-8 border-b transition-colors duration-300" style="background-color:rgba(var(--bg-base),0.85); border-color:rgba(139,142,154,0.2);">
+  <div class="flex items-center gap-3">
+    <span class="text-sm font-bold text-on-surface">Enterprise Risk Intelligence Engine</span>
+    <span class="text-[11px] font-bold text-[#6366f1] px-2.5 py-0.5 rounded-full neo-inset">
+      Empirical Risk Matrix (8 Dimensions)
+    </span>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <!-- Theme Toggle -->
+    <button onclick="toggleTheme()" class="p-2 neo-button rounded-full flex items-center justify-center text-[#8a8c9a] hover:text-[#6366f1]" title="Toggle Dark/Light Mode">
+      <span class="material-symbols-outlined dark:hidden text-[20px]">dark_mode</span>
+      <span class="material-symbols-outlined hidden dark:block text-[20px] text-amber-400">light_mode</span>
+    </button>
+    <!-- User Badge -->
+    <span class="text-xs px-3 py-1 neo-inset rounded-lg font-semibold text-[#8a8c9a]" id="userName">Administrator</span>
+    <button onclick="logout()" class="p-2 neo-button rounded-full flex items-center justify-center text-[#8a8c9a] hover:text-rose-500" title="Logout">
+      <span class="material-symbols-outlined text-[20px]">logout</span>
+    </button>
+  </div>
+</header>
+
+<!-- ========================================== -->
+<!-- MAIN CONTENT CANVAS -->
+<!-- ========================================== -->
+<main class="ml-64 pt-20 min-h-screen w-full p-8 flex flex-col gap-8">
+  
+  <!-- EXECUTIVE BANNER -->
+  <section class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3 mb-1">
+        <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Risk Assessment &amp; Vulnerability Matrix</h2>
+        <span class="badge-critical px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+          Overall Risk: High (74.5/100)
+        </span>
+      </div>
+      <p class="text-xs text-[#8a8c9a]">
+        Multidimensional enterprise risk evaluation across Inventory, Financial, Demand, Customer, Regional, Product, and Operational exposures.
+      </p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="window.print()" class="px-4 py-2 neo-button hover-neo-purple text-xs font-bold flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">print</span> Export Audit Report
+      </button>
+      <button onclick="alert('Simulation: Simulating 20% UK demand decline... Churn vulnerability modeled at $1.47M revenue impact.')" class="px-4 py-2 neo-button-primary hover-neo-purple text-xs font-bold flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">tune</span> Run Stress Test
+      </button>
+    </div>
+  </section>
+
+  <!-- ROW 1: 4 KEY RISK KPI CARDS -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+    <!-- Card 1: Regional Concentration -->
+    <div class="neo-card p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#8a8c9a] flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-rose-500 text-base">public</span>
+          Regional Concentration
+        </span>
+        <span class="badge-critical px-2 py-0.5 rounded-full text-[10px] font-bold">Critical</span>
+      </div>
+      <div class="my-2">
+        <div id="kpiUkShare" class="text-3xl font-extrabold text-rose-500 tracking-tight">83.90%</div>
+        <div id="kpiUkSales" class="text-xs font-semibold text-[#8a8c9a] mt-1">$7,381,644 in UK alone</div>
+      </div>
+      <p class="text-[11px] text-[#8a8c9a] border-t pt-2" style="border-color: rgba(139,142,154,0.15);">
+        Severe exposure to localized UK market disruptions and post-Brexit cross-border tariffs.
+      </p>
+    </div>
+
+    <!-- Card 2: Churn & Revenue at Risk -->
+    <div class="neo-card p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#8a8c9a] flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-amber-500 text-base">person_off</span>
+          Customer Churn Exposure
+        </span>
+        <span class="badge-high px-2 py-0.5 rounded-full text-[10px] font-bold">High</span>
+      </div>
+      <div class="my-2">
+        <div id="kpiAtRiskRev" class="text-3xl font-extrabold text-amber-500 tracking-tight">$504,402</div>
+        <div id="kpiAtRiskCount" class="text-xs font-semibold text-[#8a8c9a] mt-1">1,002 accounts (23.2% of base)</div>
+      </div>
+      <p class="text-[11px] text-[#8a8c9a] border-t pt-2" style="border-color: rgba(139,142,154,0.15);">
+        Average inactivity of 246.8 days; high churn probability requires urgent win-back action.
+      </p>
+    </div>
+
+    <!-- Card 3: Demand Volatility -->
+    <div class="neo-card p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#8a8c9a] flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[#6366f1] text-base">ssid_chart</span>
+          Demand Volatility (CV)
+        </span>
+        <span class="badge-high px-2 py-0.5 rounded-full text-[10px] font-bold">High</span>
+      </div>
+      <div class="my-2">
+        <div id="kpiDemandCv" class="text-3xl font-extrabold text-[#6366f1] tracking-tight">28.7% CV</div>
+        <div id="kpiDemandSwing" class="text-xs font-semibold text-[#8a8c9a] mt-1">+107.4% Q4 Holiday Surge</div>
+      </div>
+      <p class="text-[11px] text-[#8a8c9a] border-t pt-2" style="border-color: rgba(139,142,154,0.15);">
+        Revenue plunges in Jan-Feb ($493k) and spikes to $1.16M in Nov; severe procurement strain.
+      </p>
+    </div>
+
+    <!-- Card 4: Inventory Dead Stock Drag -->
+    <div class="neo-card p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#8a8c9a] flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-violet-500 text-base">inventory_2</span>
+          Catalog Dead Stock Drag
+        </span>
+        <span class="badge-medium px-2 py-0.5 rounded-full text-[10px] font-bold">Medium</span>
+      </div>
+      <div class="my-2">
+        <div id="kpiDeadStockCount" class="text-3xl font-extrabold text-violet-500 tracking-tight">998 SKUs</div>
+        <div id="kpiDeadStockPct" class="text-xs font-semibold text-[#8a8c9a] mt-1">22.46% of catalog under $100 sales</div>
+      </div>
+      <p class="text-[11px] text-[#8a8c9a] border-t pt-2" style="border-color: rgba(139,142,154,0.15);">
+        Working capital locked in zero-turnover inventory; warehouse storage costs accumulate.
+      </p>
+    </div>
+  </section>
+
+  <!-- ROW 2: INTERACTIVE RISK MATRIX (PROBABILITY VS IMPACT) -->
+  <section class="neo-card p-6 flex flex-col gap-5">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#6366f1]">grid_view</span>
+          Risk Assessment Matrix: Probability vs Impact Grid
+        </h3>
+        <p class="text-xs text-[#8a8c9a]">
+          Click any risk card to inspect detailed metrics, root-cause dynamics, and mitigation strategies.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] font-semibold text-[#8a8c9a]">Severity Legend:</span>
+        <span class="badge-critical px-2 py-0.5 rounded text-[10px] font-bold">Critical</span>
+        <span class="badge-high px-2 py-0.5 rounded text-[10px] font-bold">High</span>
+        <span class="badge-medium px-2 py-0.5 rounded text-[10px] font-bold">Medium</span>
+        <span class="badge-low px-2 py-0.5 rounded text-[10px] font-bold">Low</span>
+      </div>
+    </div>
+
+    <!-- 8 Interactive Risk Cards Grid -->
+    <div id="matrixGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Injected by JavaScript -->
+    </div>
+  </section>
+
+  <!-- ROW 3: CHARTS (RADAR RISK DISTRIBUTION & DEMAND VOLATILITY) -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Category Vulnerability Radar Chart -->
+    <div class="lg:col-span-5 neo-card p-6 flex flex-col justify-between">
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#6366f1]">radar</span>
+          Risk Category Vulnerability Profile
+        </h3>
+        <p class="text-xs text-[#8a8c9a]">Comparative index across 8 enterprise risk dimensions (0-100 scale)</p>
+      </div>
+      <div class="relative h-[320px] w-full flex items-center justify-center">
+        <canvas id="riskCategoryRadarChart"></canvas>
+      </div>
+      <div class="mt-4 pt-3 border-t text-[11px] text-[#8a8c9a] flex justify-between" style="border-color: rgba(139,142,154,0.15);">
+        <span>Highest Risk: <strong class="text-rose-500 font-bold">Regional (88)</strong></span>
+        <span>Moderate Risk: <strong class="text-[#6366f1] font-bold">Sales &amp; Product (68-70)</strong></span>
+      </div>
+    </div>
+
+    <!-- Demand Volatility & Seasonality Envelope -->
+    <div class="lg:col-span-7 neo-card p-6 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#6366f1]">show_chart</span>
+            Seasonal Demand Risk &amp; Volatility Envelope
+          </h3>
+          <p class="text-xs text-[#8a8c9a]">Monthly sales revenue bounded by ±1 Standard Deviation risk envelope ($493k slump to $1.16M peak)</p>
+        </div>
+        <span class="badge-high px-2.5 py-1 rounded-full text-xs font-bold">+107% Surge</span>
+      </div>
+      <div class="relative h-[320px] w-full">
+        <canvas id="demandVolatilityChart"></canvas>
+      </div>
+      <div class="mt-4 pt-3 border-t text-xs text-[#8a8c9a] flex items-center justify-between" style="border-color: rgba(139,142,154,0.15);">
+        <span>Q1 Trough: <strong>$493k/mo</strong></span>
+        <span>Mean: <strong>$733k/mo</strong></span>
+        <span>Q4 Peak: <strong>$1.02M+/mo</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW 4: REGIONAL CONCENTRATION & PRODUCT INVENTORY RISK TABLES -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Regional Risk Breakdown -->
+    <div class="lg:col-span-6 neo-card p-6 flex flex-col justify-between">
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-rose-500">travel_explore</span>
+          Geographic Concentration &amp; Exposure Analysis
+        </h3>
+        <p class="text-xs text-[#8a8c9a]">United Kingdom dominates 83.90% of revenue; remaining 36 countries represent small, fragmented volumes</p>
+      </div>
+      <div class="relative h-[280px] w-full">
+        <canvas id="regionalRiskChart"></canvas>
+      </div>
+      <div class="mt-4 pt-3 border-t text-xs text-[#8a8c9a]" style="border-color: rgba(139,142,154,0.15);">
+        <strong class="text-rose-500 font-semibold">Strategic Risk:</strong> A 10% decline in UK consumer spend reduces top-line revenue by <strong class="text-on-surface">$738,164</strong>, which cannot be offset by current international volume.
+      </div>
+    </div>
+
+    <!-- Product Risk: High Velocity vs Dead Stock -->
+    <div class="lg:col-span-6 neo-card p-6 flex flex-col justify-between">
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-500">warning</span>
+          Product &amp; Inventory Risk Dichotomy
+        </h3>
+        <p class="text-xs text-[#8a8c9a]">Stockout vulnerability (Top SKUs) vs Working Capital Drag (Dead Stock)</p>
+      </div>
+      
+      <!-- Top High Velocity SKUs (Stockout Risk) -->
+      <div class="mb-4">
+        <h4 class="text-xs font-bold text-[#6366f1] mb-2 flex items-center justify-between">
+          <span>Top Revenue Generators (Stockout Vulnerability)</span>
+          <span class="text-[10px] text-[#8a8c9a] font-normal">Dual-Sourcing Required</span>
+        </h4>
+        <div class="overflow-x-auto max-h-[140px] neo-inset rounded-lg p-2">
+          <table class="w-full text-left">
+            <tbody id="highVelocityTbody">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom Dead Stock SKUs -->
+      <div>
+        <h4 class="text-xs font-bold text-amber-500 mb-2 flex items-center justify-between">
+          <span>Underperforming Catalog Tail (Dead Stock Drag)</span>
+          <span class="text-[10px] text-[#8a8c9a] font-normal">Liquidation Candidate</span>
+        </h4>
+        <div class="overflow-x-auto max-h-[140px] neo-inset rounded-lg p-2">
+          <table class="w-full text-left">
+            <tbody id="deadStockTbody">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW 5: FULL RISK ASSESSMENT MATRIX TABLE -->
+  <section class="neo-card p-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div>
+        <h3 class="text-lg font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#6366f1]">table_chart</span>
+          Enterprise Risk Assessment Matrix
+        </h3>
+        <p class="text-xs text-[#8a8c9a]">Complete register of identified retail risks, probabilities, impacts, and mitigation actions.</p>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="flex flex-wrap gap-2">
+        <button id="filter-all" onclick="filterTable('ALL')" class="filter-btn px-3 py-1.5 neo-button-primary text-xs font-bold">All (8)</button>
+        <button id="filter-regional" onclick="filterTable('Regional')" class="filter-btn px-3 py-1.5 neo-button text-xs font-semibold">Regional</button>
+        <button id="filter-customer" onclick="filterTable('Customer')" class="filter-btn px-3 py-1.5 neo-button text-xs font-semibold">Customer</button>
+        <button id="filter-demand" onclick="filterTable('Demand')" class="filter-btn px-3 py-1.5 neo-button text-xs font-semibold">Demand</button>
+        <button id="filter-inventory" onclick="filterTable('Inventory')" class="filter-btn px-3 py-1.5 neo-button text-xs font-semibold">Inventory</button>
+        <button id="filter-sales" onclick="filterTable('Sales')" class="filter-btn px-3 py-1.5 neo-button text-xs font-semibold">Sales</button>
+        <button id="filter-operational" onclick="filterTable('Operational')" class="filter-btn px-3 py-1.5 neo-button text-xs font-semibold">Operational</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b text-[11px] uppercase tracking-wider text-[#8a8c9a]" style="border-color: rgba(139,142,154,0.2);">
+            <th class="py-3 px-4">Risk ID</th>
+            <th class="py-3 px-4">Category</th>
+            <th class="py-3 px-4">Identified Risk &amp; Metric</th>
+            <th class="py-3 px-4 text-center">Probability</th>
+            <th class="py-3 px-4 text-center">Impact</th>
+            <th class="py-3 px-4 text-center">Risk Level</th>
+            <th class="py-3 px-4">Recommended Mitigation Strategy</th>
+          </tr>
+        </thead>
+        <tbody id="riskTableTbody">
+          <!-- Injected by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ROW 6: STRATEGIC ACTION ROADMAP & DATASET LIMITATIONS -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Action Roadmap -->
+    <div class="lg:col-span-8 flex flex-col gap-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[#6366f1]">rocket_launch</span>
+        <h3 class="text-base font-bold text-on-surface">Strategic Risk Mitigation Action Plan</h3>
+      </div>
+      <div id="roadmapContainer" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+
+    <!-- Academic Presentation Limitations Box -->
+    <div class="lg:col-span-4 neo-card p-6 flex flex-col gap-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-amber-500">warning</span>
+        <h4 class="text-sm font-bold text-on-surface">Dataset Scope &amp; Limitations</h4>
+      </div>
+      <p class="text-xs text-[#8a8c9a] leading-relaxed">
+        To maintain research integrity in this project presentation, the following measurement boundaries of the Online Retail II dataset are documented:
+      </p>
+      <div id="limitationsList" class="flex flex-col gap-3">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========================================== -->
+<!-- DETAIL MODAL FOR CLICKED RISK -->
+<!-- ========================================== -->
+<div id="riskModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+  <div class="neo-card p-6 max-w-lg w-full flex flex-col gap-4 relative animate-slide-in">
+    <button onclick="closeModal()" class="absolute top-4 right-4 p-1 rounded-full neo-button flex items-center justify-center text-[#8a8c9a] hover:text-on-surface">
+      <span class="material-symbols-outlined text-sm">close</span>
+    </button>
+    <div class="flex items-center gap-2">
+      <span id="modalBadge" class="px-3 py-1 rounded-full text-xs font-bold">Level</span>
+      <span id="modalCategory" class="text-xs text-[#8a8c9a] font-medium">Category</span>
+    </div>
+    <h3 id="modalTitle" class="text-lg font-bold text-on-surface">Risk Title</h3>
+    <div class="neo-inset p-3.5 rounded-xl">
+      <h5 class="text-xs font-bold text-primary mb-1">Empirical Evidence &amp; Impact</h5>
+      <p id="modalMetric" class="text-xs text-on-surface leading-relaxed">Metric detail...</p>
+    </div>
+    <div class="neo-card p-3.5 rounded-xl border border-indigo-500/20">
+      <h5 class="text-xs font-bold text-emerald-500 mb-1 flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">shield</span> Recommended Mitigation Strategy
+      </h5>
+      <p id="modalMitigation" class="text-xs text-on-surface-variant leading-relaxed">Strategy detail...</p>
+    </div>
+    <div class="flex justify-end pt-2">
+      <button onclick="closeModal()" class="px-5 py-2 neo-button-primary text-xs font-bold">
+        Acknowledge &amp; Close
+      </button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

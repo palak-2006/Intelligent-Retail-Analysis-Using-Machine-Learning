@@ -217,10 +217,15 @@
         <span class="text-xs uppercase font-bold tracking-wider">CLV Intelligence</span>
         <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
       </a>
-      <!-- 5. AI / ML -->
-      <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static cursor-pointer" onclick="window.location.href=getPageUrl('dashboard')">
-        <span class="material-symbols-outlined text-lg">psychology</span>
-        <span class="text-xs uppercase font-bold tracking-wider">AI/ML</span>
+      <!-- 5. Risk Analysis -->
+      <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static cursor-pointer" onclick="window.location.href=getPageUrl('risk')">
+        <span class="material-symbols-outlined text-lg">shield</span>
+        <span class="text-xs uppercase font-bold tracking-wider">Risk Analysis</span>
+      </a>
+      <!-- 6. Customer Profile -->
+      <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary neo-shadow-static cursor-pointer" onclick="window.location.href=getPageUrl('customer-details')">
+        <span class="material-symbols-outlined text-lg">badge</span>
+        <span class="text-xs uppercase font-bold tracking-wider">Customer Profile</span>
       </a>
     </nav>
   </div>
@@ -750,7 +755,8 @@
         sales: '../retailiq_sales_analytics_theme_toggle_pie_chart/code.html',
         segmentation: '../retailiq_customer_segmentation_theme_toggle_purple_glow/code.html',
         'customer-details': '../retailiq_customer_details_theme_toggle_purple_glow/code.html',
-        clv: '../retailiq_clv_analytics_theme_toggle_purple_glow/code.html'
+        clv: '../retailiq_clv_analytics_theme_toggle_purple_glow/code.html',
+        risk: '../retailiq_risk_analytics_theme_toggle_purple_glow/code.html'
       };
       return map[page] || page;
     }
