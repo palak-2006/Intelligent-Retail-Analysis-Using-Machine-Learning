@@ -44,7 +44,20 @@
         return '/' + page;
     }
 
-    function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('retailiq_theme', isDark ? 'dark' : 'light');
+    }
+    function initTheme() {
+        const savedTheme = localStorage.getItem('retailiq_theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+    initTheme();
+
     function getToken() { return localStorage.getItem('retailiq_token'); }
     function getUserName() { return localStorage.getItem('retailiq_name') || 'User'; }
     function logout() { localStorage.removeItem('retailiq_token'); localStorage.removeItem('retailiq_name'); localStorage.removeItem('retailiq_email'); window.location.href = getPageUrl('login'); }
@@ -53,6 +66,17 @@
     const SEGMENT_COLORS = { 'VIP Customers':'#6366f1','Loyal High-Value Customers':'#7c3aed','Regular Customers':'#818cf8','At-Risk Customers':'#dc2626','Other':'#6c6e7e' };
     function segColor(name) { return SEGMENT_COLORS[name] || '#6366f1'; }
 
+    const CLV_COLORS = { 
+        'High CLV': '#10b981', 
+        'Medium CLV': '#8b5cf6', 
+        'Low CLV': '#f59e0b',
+        'VIP': '#10b981',
+        'High': '#10b981',
+        'Medium': '#8b5cf6',
+        'Low': '#f59e0b'
+    };
+    function clvColor(tier) { return CLV_COLORS[tier] || '#8b5cf6'; }
+
     async function loadCustomer(id) {
         if (!getToken()) { window.location.href = getPageUrl('login'); return; }
         
@@ -60,12 +84,15 @@
             const params = new URLSearchParams(window.location.search);
             id = params.get('id');
         }
-        if (!id) {
+        if (id) {
+            id = String(id).toUpperCase().replace(/CUST-?/g, '').replace(/#/g, '').trim();
+        }
+        if (!id || isNaN(parseInt(id, 10))) {
             const list = await apiGet('/api/customers/list?limit=1');
             if (list && list.length > 0) {
-                id = list[0]['Customer ID'];
+                id = list[0]['Customer ID'] || list[0]['CustomerID'] || list[0]['customer_id'] || 14911;
             } else {
-                id = 12346;
+                id = 14911;
             }
         }
 

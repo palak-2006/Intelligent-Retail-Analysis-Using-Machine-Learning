@@ -518,11 +518,17 @@ def customers_list():
     return jsonify(_segments_df.head(limit).to_dict(orient="records"))
 
 
-@app.route("/api/customers/<int:customer_id>", methods=["GET"])
+@app.route("/api/customers/<customer_id>", methods=["GET"])
 @require_auth
 def customer_details(customer_id):
     if _df_clean is None or _segments_df is None:
         return jsonify({"error": "Dataset not available."}), 503
+
+    clean_id = str(customer_id).upper().replace("CUST-", "").replace("CUST", "").replace("#", "").strip()
+    try:
+        customer_id = int(clean_id)
+    except ValueError:
+        return jsonify({"error": f"Invalid Customer ID: {customer_id}"}), 400
 
     seg_row = _segments_df[_segments_df["Customer ID"] == customer_id]
     cust_tx = _df_clean[_df_clean["Customer ID"] == customer_id]
